@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — nueCredit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="../css/globals.css">
+<style>
+.page-hero { background: var(--bk); padding: 140px 0 80px; position: relative; overflow: hidden; }
+.page-hero::before { content:''; position:absolute; top:-200px; right:-200px; width:600px; height:600px; background:radial-gradient(circle,rgba(0,134,1,.1) 0%,transparent 70%); pointer-events:none; }
+.page-hero::after { content:''; position:absolute; bottom:-100px; left:-100px; width:400px; height:400px; background:radial-gradient(circle,rgba(0,166,81,.06) 0%,transparent 70%); pointer-events:none; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.page-hero h1 { font-size: clamp(36px,5vw,60px); font-weight:800; color:#fff; letter-spacing:-2.5px; line-height:1.05; margin-bottom:18px; }
+.page-hero h1 span { color:var(--gb); }
+.page-hero p { font-size:18px; color:rgba(255,255,255,.45); line-height:1.72; max-width:520px; margin-bottom:36px; }
+.page-hero .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.22); color:var(--gb); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px; margin-bottom:24px; }
+.page-hero .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gb); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+
+/* Hero visual — floating price cards */
+.hero-visual { position: relative; display: flex; align-items: center; justify-content: center; min-height: 380px; }
+.float-card {
+  position: absolute; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px; padding: 24px; backdrop-filter: blur(10px);
+  animation: floatUp 6s ease-in-out infinite;
+}
+.float-card:nth-child(1) { top: 10%; left: 5%; width: 180px; animation-delay: 0s; }
+.float-card:nth-child(2) { top: 5%; right: 5%; width: 200px; animation-delay: -2s; }
+.float-card:nth-child(3) { bottom: 5%; left: 15%; width: 220px; animation-delay: -4s; }
+@keyframes floatUp { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.float-price { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; color: #fff; letter-spacing: -1.5px; }
+.float-label { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 4px; }
+.float-per { font-size: 14px; color: rgba(255,255,255,.25); font-weight: 400; }
+.float-card .float-badge { display: inline-block; background: rgba(0,134,1,.2); color: var(--gb); font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px; }
+.hero-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,134,1,.2) 0%, transparent 70%);
+  filter: blur(40px); pointer-events: none;
+}
+
+/* Comparison section */
+.compare-section { background: var(--wh); }
+.compare-table { border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-top: 48px; }
+.compare-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; }
+.compare-head { background: var(--bg); }
+.compare-head .compare-cell { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--tx); padding: 16px 20px; }
+.compare-head .compare-cell.hot-col { background: var(--bk); color: #fff; }
+.compare-cell { padding: 14px 20px; font-size: 13px; color: var(--tl); border-top: 1px solid var(--border); }
+.compare-cell.feature { font-weight: 600; color: var(--tx); }
+.compare-cell.hot-col { background: rgba(10,10,10,.03); }
+.compare-check { color: var(--g); font-weight: 700; font-size: 14px; }
+.compare-check.no { color: #CCC; }
+
+/* Guarantee */
+.guarantee-section { background: var(--bg); }
+.guarantee-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.guarantee-card {
+  background: var(--wh); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 28px; text-align: center;
+  transition: all .25s;
+}
+.guarantee-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: rgba(0,134,1,.2); }
+.guarantee-icon { font-size: 32px; margin-bottom: 16px; }
+.guarantee-card h4 { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--tx); margin-bottom: 8px; }
+.guarantee-card p { font-size: 13px; color: var(--tl); line-height: 1.65; }
+
+/* FAQ */
+.faq-section { background: var(--wh); }
+.faq-grid { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: all .2s; }
+.faq-item:hover { border-color: rgba(0,134,1,.2); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; cursor: pointer; gap: 16px;
+  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--tx); background: var(--wh);
+}
+.faq-q:hover { background: var(--bg); }
+.faq-icon {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+  background: var(--bg); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--g); transition: transform .3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a-inner { padding: 0 22px 18px; font-size: 14px; color: var(--tl); line-height: 1.72; }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .compare-row { grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 12px; }
+  .compare-cell { padding: 12px 10px; font-size: 11px; }
+  .guarantee-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .guarantee-grid { grid-template-columns: 1fr; }
+  .compare-row { grid-template-columns: 1.5fr 1fr 1fr 1fr; }
+  .compare-cell { padding: 10px 8px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><img src="../images/logo.svg" alt="nueCredit"></a>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="pricing.html" class="active">Pricing</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+      <a href="#plans" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="how-it-works.html">How It Works</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="about.html">About</a>
+  <a href="partners.html">Partners</a>
+  <a href="blog.html">Blog</a>
+  <a href="contact.html">Contact</a>
+  <a href="#plans" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge"><div class="hero-badge-dot"></div>No Contracts, Cancel Anytime</div>
+        <h1>Simple Plans.<br><span>Real Results.</span></h1>
+        <p>Transparent pricing with no hidden fees. Choose the plan that fits your needs and start rebuilding your credit today.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="#plans" class="btn btn-primary btn-lg">See All Plans</a>
+          <a href="#compare" class="btn btn-ghost btn-lg">Compare Features →</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <div class="float-card">
+          <div class="float-badge">BASIC</div>
+          <div class="float-price">$79<span class="float-per">/mo</span></div>
+          <div class="float-label">1 Bureau Coverage</div>
+        </div>
+        <div class="float-card">
+          <div class="float-badge">PRO — POPULAR</div>
+          <div class="float-price">$149<span class="float-per">/mo</span></div>
+          <div class="float-label">All 3 Bureaus</div>
+        </div>
+        <div class="float-card">
+          <div class="float-badge">PREMIUM</div>
+          <div class="float-price">$249<span class="float-per">/mo</span></div>
+          <div class="float-label">Unlimited Disputes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar section-sm">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-item reveal"><span class="stat-val">$79</span><span class="stat-lbl">Starting Monthly Price</span></div>
+      <div class="stat-item reveal reveal-delay-1"><span class="stat-val">$0</span><span class="stat-lbl">Hidden Fees — Ever</span></div>
+      <div class="stat-item reveal reveal-delay-2"><span class="stat-val">30 sec</span><span class="stat-lbl">To Cancel Online</span></div>
+      <div class="stat-item reveal reveal-delay-3"><span class="stat-val">+73pts</span><span class="stat-lbl">Average Score Gain</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="plans" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">Choose Your Plan</div><h2>Credit Repair That Fits Your Budget</h2><p>Every plan includes a client portal, progress tracking, and dedicated support.</p></div>
+    <div class="pricing-grid">
+      <div class="price-card reveal reveal-delay-1">
+        <div class="price-name">Basic</div>
+        <div class="price-amount"><span class="price-num">$79</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $99 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>1 Bureau (your choice)</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Up to 5 disputes/month</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Credit report analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Monthly progress report</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Client portal access</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Email support</li>
+          <li class="price-feat"><span class="price-feat-check no">—</span>Tradeline strategy</li>
+          <li class="price-feat"><span class="price-feat-check no">—</span>Priority support</li>
+        </ul>
+        <a href="#" class="price-btn">Get Started</a>
+      </div>
+      <div class="price-card hot reveal">
+        <div class="price-pop">⭐ Most Popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amount"><span class="price-num">$149</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $149 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>All 3 Bureaus</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Up to 15 disputes/month</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Full credit analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Bi-weekly progress reports</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Full portal + score chart</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Email + chat support</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Tradeline strategy</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Debt validation letters</li>
+        </ul>
+        <a href="#" class="price-btn hot-btn">Get Started</a>
+      </div>
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-name">Premium</div>
+        <div class="price-amount"><span class="price-num">$249</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $199 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>All 3 Bureaus</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Unlimited disputes</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Full credit analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Weekly progress reports</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Full portal + AI coach</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Priority phone support</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Dedicated credit coach</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Tradeline implementation</li>
+        </ul>
+        <a href="#" class="price-btn">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section compare-section" id="compare">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">Compare Plans</div><h2>Feature-by-Feature Comparison</h2><p>See exactly what's included in each plan.</p></div>
+    <div class="compare-table reveal">
+      <div class="compare-row compare-head">
+        <div class="compare-cell">Feature</div>
+        <div class="compare-cell" style="text-align:center;">Basic</div>
+        <div class="compare-cell hot-col" style="text-align:center;">Pro</div>
+        <div class="compare-cell" style="text-align:center;">Premium</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Bureau Coverage</div>
+        <div class="compare-cell" style="text-align:center;">1 Bureau</div>
+        <div class="compare-cell hot-col" style="text-align:center;">All 3</div>
+        <div class="compare-cell" style="text-align:center;">All 3</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Monthly Disputes</div>
+        <div class="compare-cell" style="text-align:center;">Up to 5</div>
+        <div class="compare-cell hot-col" style="text-align:center;">Up to 15</div>
+        <div class="compare-cell" style="text-align:center;">Unlimited</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Progress Reports</div>
+        <div class="compare-cell" style="text-align:center;">Monthly</div>
+        <div class="compare-cell hot-col" style="text-align:center;">Bi-weekly</div>
+        <div class="compare-cell" style="text-align:center;">Weekly</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Client Portal</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Score Chart Tracking</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Tradeline Strategy</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Debt Validation Letters</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">AI Credit Coach</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Dedicated Coach</div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check no">—</span></div>
+        <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-cell feature">Support</div>
+        <div class="compare-cell" style="text-align:center;">Email</div>
+        <div class="compare-cell hot-col" style="text-align:center;">Email + Chat</div>
+        <div class="compare-cell" style="text-align:center;">Priority Phone</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section guarantee-section">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">Our Guarantee</div><h2>Why You Can Trust nueCredit</h2><p>We stand behind our work with iron-clad commitments.</p></div>
+    <div class="guarantee-grid">
+      <div class="guarantee-card reveal reveal-delay-1">
+        <div class="guarantee-icon">🔒</div>
+        <h4>CROA Compliant</h4>
+        <p>We follow every federal regulation under the Credit Repair Organizations Act. Your rights are always protected.</p>
+      </div>
+      <div class="guarantee-card reveal reveal-delay-2">
+        <div class="guarantee-icon">🚫</div>
+        <h4>No Contracts</h4>
+        <p>Cancel your plan any time with zero fees, zero penalties. We earn your business monthly through results.</p>
+      </div>
+      <div class="guarantee-card reveal reveal-delay-3">
+        <div class="guarantee-icon">💯</div>
+        <h4>Transparent Pricing</h4>
+        <p>The price you see is the price you pay. No hidden charges, no surprise fees, no bait-and-switch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section faq-section">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">FAQ</div><h2>Pricing Questions</h2></div>
+    <div class="faq-grid">
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>What's included in the enrollment fee?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">The one-time enrollment fee covers your initial credit report analysis, account setup, dispute strategy creation, and first round of dispute letters. It's a one-time charge — you won't see it again.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>Can I switch plans later?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Yes! You can upgrade or downgrade your plan at any time. If you upgrade, the new rate starts on your next billing cycle. If you downgrade, we'll apply the lower rate immediately.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>How long should I stay enrolled?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Most clients see significant results within 3–6 months. The bureau dispute process takes 30–45 days per round, so we recommend at least 3 months for meaningful improvement. That said, you can cancel anytime.</div></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>Is there a money-back guarantee?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">We don't offer money-back guarantees because credit repair is a process, not a one-time event. However, we never lock you in — cancel anytime if you're not satisfied with our service.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-banner">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="eyebrow light" style="justify-content:center;">Start Today — Takes 5 Minutes</div>
+      <h2>Ready To Invest In<br>Your Credit?</h2>
+      <p>Join 1,200+ clients who chose nueCredit. No contracts. Cancel anytime.</p>
+      <a href="#plans" class="btn btn-white btn-lg">Choose Your Plan</a>
+      <div class="cta-trust">
+        <div class="cta-trust-item">🔒 Secure Payment</div>
+        <div class="cta-trust-item">✓ CROA Compliant</div>
+        <div class="cta-trust-item">✓ Cancel Anytime</div>
+        <div class="cta-trust-item">✓ US-Based Team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="../index.html" class="footer-logo"><img src="../images/logo.svg" alt="nueCredit"></a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Basic Plan</a></li>
+          <li><a href="#">Pro Plan</a></li>
+          <li><a href="#">Premium Plan</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="partners.html">Partner Program</a></li>
+          <li><a href="#">Partner Login</a></li>
+          <li><a href="partners.html#apply">Apply Now</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">CROA Disclosure</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
