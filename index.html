@@ -21,31 +21,8 @@
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
 .hero-trust { display: flex; gap: 20px; flex-wrap: wrap; }
 .hero-trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,.35); }
-.dashboard { background: var(--dk); border: 1px solid rgba(255,255,255,.07); border-radius: var(--r-lg); padding: 24px; box-shadow: 0 32px 80px rgba(0,0,0,.6); }
-.dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
-.dashboard-name { font-family:'Sora',sans-serif; font-size:15px; font-weight:700; color:#fff; }
-.dashboard-greeting { font-size:11px; color:rgba(255,255,255,.32); margin-bottom:3px; }
-.plan-badge { background:rgba(0,134,1,.18); border:1px solid rgba(0,134,1,.26); color:var(--gb); font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; }
-.score-card { background:linear-gradient(135deg,var(--gd),var(--gb)); border-radius:14px; padding:20px; margin-bottom:12px; }
-.score-label { font-size:10px; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.8px; margin-bottom:3px; }
-.score-number { font-family:'Sora',sans-serif; font-size:52px; font-weight:800; color:#fff; line-height:1; }
-.score-badge { display:inline-block; margin-top:9px; background:rgba(255,255,255,.18); color:#fff; font-size:11px; font-weight:700; padding:3px 11px; border-radius:100px; }
-.score-bar { margin-top:12px; background:rgba(255,255,255,.2); border-radius:100px; height:4px; }
-.score-bar-fill { background:#fff; width:67%; height:4px; border-radius:100px; }
-.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
-.stat-mini { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; }
-.stat-mini-label { font-size:10px; color:rgba(255,255,255,.32); margin-bottom:3px; }
-.stat-mini-val { font-family:'Sora',sans-serif; font-size:20px; font-weight:800; color:#fff; }
-.stat-mini-change { font-size:10px; color:var(--gb); margin-top:2px; }
-.activity { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; }
-.activity-title { font-size:10px; color:rgba(255,255,255,.32); text-transform:uppercase; letter-spacing:.8px; font-weight:700; margin-bottom:10px; }
-.activity-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; }
-.activity-row + .activity-row { border-top:1px solid rgba(255,255,255,.04); }
-.activity-name { font-size:11px; color:rgba(255,255,255,.52); }
-.status-badge { font-size:9px; font-weight:700; padding:2px 9px; border-radius:100px; }
-.status-removed  { background:rgba(0,134,1,.2);    color:var(--gb); }
-.status-progress { background:rgba(255,165,0,.14); color:#FFB020; }
-.status-pending  { background:rgba(255,255,255,.07); color:rgba(255,255,255,.38); }
+.hero-img-wrap { display:flex; align-items:center; justify-content:center; }
+.hero-img { width:100%; max-width:520px; border-radius:24px; box-shadow:0 32px 80px rgba(0,0,0,.55); display:block; }
 .hiw { background: var(--bk); }
 .tl-wrap { position:relative; max-width:660px; margin:0 auto; }
 .tl-wrap::before { content:''; position:absolute; left:17px; top:0; bottom:0; width:2px; background:rgba(255,255,255,.07); border-radius:2px; }
@@ -62,7 +39,7 @@
 .tl-step.on .tl-desc { color:rgba(255,255,255,.45); }
 .tl-chip { display:inline-block; margin-top:10px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.2); color:var(--gb); font-size:11px; font-weight:600; padding:3px 12px; border-radius:100px; opacity:0; transition:opacity .4s .2s; }
 .tl-step.on .tl-chip { opacity:1; }
-@media (max-width:900px) { .hero-grid { grid-template-columns:1fr; } .dashboard { display:none; } }
+@media (max-width:900px) { .hero-grid { grid-template-columns:1fr; } .hero-img-wrap { display:none; } }
 @media (max-width:600px) { .hero h1 { letter-spacing:-1.5px; } }
 </style>
 </head>
@@ -114,29 +91,8 @@
           <div class="hero-trust-item"><svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>US-Based Team</div>
         </div>
       </div>
-      <div>
-        <div class="dashboard">
-          <div class="dashboard-header">
-            <div><div class="dashboard-greeting">Welcome back 👋</div><div class="dashboard-name">Marcus Johnson</div></div>
-            <div class="plan-badge">Pro Plan</div>
-          </div>
-          <div class="score-card">
-            <div class="score-label">Credit Score</div>
-            <div class="score-number">687</div>
-            <div class="score-badge">↑ +83 pts since joining nueCredit</div>
-            <div class="score-bar"><div class="score-bar-fill"></div></div>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-mini"><div class="stat-mini-label">Disputes Filed</div><div class="stat-mini-val">14</div><div class="stat-mini-change">↑ 3 this month</div></div>
-            <div class="stat-mini"><div class="stat-mini-label">Items Removed</div><div class="stat-mini-val">7</div><div class="stat-mini-change">↑ 2 this month</div></div>
-          </div>
-          <div class="activity">
-            <div class="activity-title">Recent Activity</div>
-            <div class="activity-row"><span class="activity-name">Late Payment — Equifax</span><span class="status-badge status-removed">Removed ✓</span></div>
-            <div class="activity-row"><span class="activity-name">Collection — Experian</span><span class="status-badge status-progress">In Progress</span></div>
-            <div class="activity-row"><span class="activity-name">Hard Inquiry — TransUnion</span><span class="status-badge status-pending">Pending</span></div>
-          </div>
-        </div>
+      <div class="hero-img-wrap">
+        <img src="images/hero-dashboard.png" alt="nueCredit dashboard preview" class="hero-img">
       </div>
     </div>
   </div>
