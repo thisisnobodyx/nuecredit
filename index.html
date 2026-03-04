@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nueCredit — Take Back Control of Your Credit Score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/globals.css">
+<style>
+/* ── PAGE-SPECIFIC ──────────────────────────────────────────── */
+.hero { background: var(--bk); padding: 160px 0 100px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(0,134,1,.12) 0%, transparent 70%); pointer-events: none; }
+.hero::after  { content: ''; position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,166,81,.06) 0%, transparent 70%); pointer-events: none; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,134,1,.1); border: 1px solid rgba(0,134,1,.22); color: var(--gb); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gb); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+.hero h1 { font-size: clamp(36px,5vw,62px); font-weight: 800; letter-spacing: -2.5px; color: #fff; line-height: 1.05; margin-bottom: 22px; }
+.hero h1 span { color: var(--gb); }
+.hero-sub { font-size: 17px; color: rgba(255,255,255,.45); line-height: 1.72; max-width: 460px; margin-bottom: 36px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-trust { display: flex; gap: 20px; flex-wrap: wrap; }
+.hero-trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,.35); }
+.dashboard { background: var(--dk); border: 1px solid rgba(255,255,255,.07); border-radius: var(--r-lg); padding: 24px; box-shadow: 0 32px 80px rgba(0,0,0,.6); }
+.dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.dashboard-name { font-family:'Sora',sans-serif; font-size:15px; font-weight:700; color:#fff; }
+.dashboard-greeting { font-size:11px; color:rgba(255,255,255,.32); margin-bottom:3px; }
+.plan-badge { background:rgba(0,134,1,.18); border:1px solid rgba(0,134,1,.26); color:var(--gb); font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; }
+.score-card { background:linear-gradient(135deg,var(--gd),var(--gb)); border-radius:14px; padding:20px; margin-bottom:12px; }
+.score-label { font-size:10px; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.8px; margin-bottom:3px; }
+.score-number { font-family:'Sora',sans-serif; font-size:52px; font-weight:800; color:#fff; line-height:1; }
+.score-badge { display:inline-block; margin-top:9px; background:rgba(255,255,255,.18); color:#fff; font-size:11px; font-weight:700; padding:3px 11px; border-radius:100px; }
+.score-bar { margin-top:12px; background:rgba(255,255,255,.2); border-radius:100px; height:4px; }
+.score-bar-fill { background:#fff; width:67%; height:4px; border-radius:100px; }
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+.stat-mini { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; }
+.stat-mini-label { font-size:10px; color:rgba(255,255,255,.32); margin-bottom:3px; }
+.stat-mini-val { font-family:'Sora',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+.stat-mini-change { font-size:10px; color:var(--gb); margin-top:2px; }
+.activity { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; }
+.activity-title { font-size:10px; color:rgba(255,255,255,.32); text-transform:uppercase; letter-spacing:.8px; font-weight:700; margin-bottom:10px; }
+.activity-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; }
+.activity-row + .activity-row { border-top:1px solid rgba(255,255,255,.04); }
+.activity-name { font-size:11px; color:rgba(255,255,255,.52); }
+.status-badge { font-size:9px; font-weight:700; padding:2px 9px; border-radius:100px; }
+.status-removed  { background:rgba(0,134,1,.2);    color:var(--gb); }
+.status-progress { background:rgba(255,165,0,.14); color:#FFB020; }
+.status-pending  { background:rgba(255,255,255,.07); color:rgba(255,255,255,.38); }
+.hiw { background: var(--bk); }
+.tl-wrap { position:relative; max-width:660px; margin:0 auto; }
+.tl-wrap::before { content:''; position:absolute; left:17px; top:0; bottom:0; width:2px; background:rgba(255,255,255,.07); border-radius:2px; }
+.tl-fill { position:absolute; left:17px; top:0; width:2px; background:linear-gradient(to bottom,var(--gb),var(--g)); height:0; transition:height .6s cubic-bezier(.4,0,.2,1); border-radius:2px; pointer-events:none; }
+.tl-step { display:flex; gap:24px; padding-bottom:42px; opacity:0; transform:translateY(16px); transition:opacity .5s,transform .5s; }
+.tl-step:last-child { padding-bottom:0; }
+.tl-step.on { opacity:1; transform:none; }
+.tl-dot { flex-shrink:0; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.05); border:2px solid rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; font-family:'Sora',sans-serif; font-size:13px; font-weight:800; color:rgba(255,255,255,.22); transition:all .5s; position:relative; z-index:1; margin-top:2px; }
+.tl-step.on .tl-dot { background:var(--g); border-color:var(--g); color:#fff; box-shadow:0 0 0 5px rgba(0,134,1,.2),0 0 0 11px rgba(0,134,1,.07); }
+.tl-body { flex:1; padding-top:5px; }
+.tl-title { font-family:'Sora',sans-serif; font-size:17px; font-weight:700; color:rgba(255,255,255,.2); margin-bottom:7px; transition:color .5s; }
+.tl-step.on .tl-title { color:#fff; }
+.tl-desc { font-size:14px; color:rgba(255,255,255,.14); line-height:1.7; transition:color .5s; }
+.tl-step.on .tl-desc { color:rgba(255,255,255,.45); }
+.tl-chip { display:inline-block; margin-top:10px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.2); color:var(--gb); font-size:11px; font-weight:600; padding:3px 12px; border-radius:100px; opacity:0; transition:opacity .4s .2s; }
+.tl-step.on .tl-chip { opacity:1; }
+@media (max-width:900px) { .hero-grid { grid-template-columns:1fr; } .dashboard { display:none; } }
+@media (max-width:600px) { .hero h1 { letter-spacing:-1.5px; } }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">nueCredit</a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="pages/about.html">About</a></li>
+      <li><a href="pages/partners.html">Partners</a></li>
+      <li><a href="pages/blog.html">Blog</a></li>
+      <li><a href="pages/contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+      <a href="#pricing" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#how-it-works">How It Works</a>
+  <a href="#pricing">Pricing</a>
+  <a href="pages/about.html">About</a>
+  <a href="pages/partners.html">Partners</a>
+  <a href="pages/blog.html">Blog</a>
+  <a href="pages/contact.html">Contact</a>
+  <a href="#pricing" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge"><div class="hero-badge-dot"></div>#1 Credit Restoration Platform</div>
+        <h1>Take Back Control of Your <span>Credit Score.</span></h1>
+        <p class="hero-sub">nueCredit disputes inaccuracies, builds positive history, and improves your score — so you qualify for the home, car, and life you deserve.</p>
+        <div class="hero-actions">
+          <a href="#pricing" class="btn btn-primary btn-lg">See Our Plans</a>
+          <a href="#" class="btn btn-ghost btn-lg">Get Free Audit →</a>
+        </div>
+        <div class="hero-trust">
+          <div class="hero-trust-item"><svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>CROA Compliant</div>
+          <div class="hero-trust-item"><svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>60–90 Day Results</div>
+          <div class="hero-trust-item"><svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>Cancel Anytime</div>
+          <div class="hero-trust-item"><svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>US-Based Team</div>
+        </div>
+      </div>
+      <div>
+        <div class="dashboard">
+          <div class="dashboard-header">
+            <div><div class="dashboard-greeting">Welcome back 👋</div><div class="dashboard-name">Marcus Johnson</div></div>
+            <div class="plan-badge">Pro Plan</div>
+          </div>
+          <div class="score-card">
+            <div class="score-label">Credit Score</div>
+            <div class="score-number">687</div>
+            <div class="score-badge">↑ +83 pts since joining nueCredit</div>
+            <div class="score-bar"><div class="score-bar-fill"></div></div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-mini"><div class="stat-mini-label">Disputes Filed</div><div class="stat-mini-val">14</div><div class="stat-mini-change">↑ 3 this month</div></div>
+            <div class="stat-mini"><div class="stat-mini-label">Items Removed</div><div class="stat-mini-val">7</div><div class="stat-mini-change">↑ 2 this month</div></div>
+          </div>
+          <div class="activity">
+            <div class="activity-title">Recent Activity</div>
+            <div class="activity-row"><span class="activity-name">Late Payment — Equifax</span><span class="status-badge status-removed">Removed ✓</span></div>
+            <div class="activity-row"><span class="activity-name">Collection — Experian</span><span class="status-badge status-progress">In Progress</span></div>
+            <div class="activity-row"><span class="activity-name">Hard Inquiry — TransUnion</span><span class="status-badge status-pending">Pending</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="logos-strip">
+  <div class="container">
+    <div class="logos-inner">
+      <span class="logos-label">Trusted by professionals at</span>
+      <span class="logo-name">Equifax</span><span class="logo-name">Experian</span><span class="logo-name">TransUnion</span><span class="logo-name">AutoNation</span><span class="logo-name">RE/MAX</span><span class="logo-name">loanDepot</span>
+    </div>
+  </div>
+</div>
+
+<section class="section" style="background:var(--wh);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="eyebrow">What We Offer</div>
+      <h2>Transforming Credit<br>Repair Experiences</h2>
+      <p>Three service tiers designed to meet you where you are — and get you where you need to be.</p>
+    </div>
+    <div class="cards-grid-3">
+      <div class="card reveal reveal-delay-1"><div class="card-icon">📊</div><h3>Credit Analysis</h3><p>We pull all 3 bureau reports and identify every inaccurate, outdated, or harmful item dragging your score down.</p><div class="card-stat"><span class="card-stat-val">3</span><span class="card-stat-lbl">bureaus analyzed<br>every month</span></div></div>
+      <div class="card reveal reveal-delay-2"><div class="card-icon">📝</div><h3>Dispute Management</h3><p>Targeted dispute letters sent to all three bureaus on your behalf — every month, automatically.</p><div class="card-stat"><span class="card-stat-val">15+</span><span class="card-stat-lbl">disputes per month<br>on Pro plan</span></div></div>
+      <div class="card reveal reveal-delay-3"><div class="card-icon">📈</div><h3>Score Building</h3><p>Beyond disputes — coaching on utilization, tradelines, and positive history to accelerate your improvement.</p><div class="card-stat"><span class="card-stat-val">+73</span><span class="card-stat-lbl">avg pts gained<br>in 90 days</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">Features</div><h2>Everything You Need to Rebuild Your Credit</h2><p>Professional tools and dedicated support — built to get results fast.</p></div>
+    <div class="bento-grid reveal">
+      <div class="bento-card"><div class="bento-tag">Real-Time Dashboard</div><h3>Track Every Dispute in Real Time</h3><p>Your client portal shows every dispute filed, every bureau response, and every point gained — updated automatically.</p><ul class="checklist"><li>Live dispute status per bureau — Equifax, Experian, TransUnion</li><li>Score progress chart with milestone markers</li><li>Instant email + SMS when items are removed</li></ul></div>
+      <div class="bento-card dark"><div class="bento-tag">AI Credit Coach</div><h3>24/7 AI Credit Coach</h3><p>Get instant answers to any credit question, any time — powered by Claude AI.</p><ul class="checklist"><li>Powered by Claude AI</li><li>CROA-compliant responses</li><li>Available on every page</li></ul></div>
+    </div>
+    <div class="bento-grid-2 reveal">
+      <div class="bento-card"><div class="bento-tag">Free Tools</div><div class="bento-num green-text">2</div><h3>Free Credit Tools</h3><p>Score simulator and mortgage readiness calculator — no signup required.</p></div>
+      <div class="bento-card green"><div class="bento-tag">Avg. Results</div><div class="bento-num white-text">+73</div><h3>Points Gained</h3><p>Our clients gain an average of 73 points within 90 days of starting.</p></div>
+      <div class="bento-card"><div class="bento-tag">Coverage</div><h3>All 3 Bureaus. Every Month.</h3><p>Simultaneous disputes across Equifax, Experian, and TransUnion every billing cycle.</p><ul class="checklist"><li>3-bureau letters every cycle</li><li>Debt validation on Pro &amp; Premium</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="section hiw" id="how-it-works">
+  <div class="container">
+    <div class="section-header center reveal" style="margin-bottom:52px;"><div class="eyebrow light">How It Works</div><h2 style="color:#fff;">A Smarter Way to Repair<br>Your Credit</h2><p style="color:rgba(255,255,255,.45);">We handle the hard work. You watch your score climb. Most clients see results within 60 days.</p></div>
+    <div class="tl-wrap" id="tlWrap">
+      <div class="tl-fill" id="tlFill"></div>
+      <div class="tl-step" data-step><div class="tl-dot">1</div><div class="tl-body"><div class="tl-title">Sign Up &amp; Choose a Plan</div><div class="tl-desc">Pick Basic, Pro, or Premium. Enrollment takes under 5 minutes. No contracts — cancel anytime.</div><span class="tl-chip">Takes 5 minutes</span></div></div>
+      <div class="tl-step" data-step><div class="tl-dot">2</div><div class="tl-body"><div class="tl-title">Upload Your Credit Reports</div><div class="tl-desc">Upload your 3-bureau report through your client portal. We analyze every item within 24 hours.</div><span class="tl-chip">Analysis within 24 hrs</span></div></div>
+      <div class="tl-step" data-step><div class="tl-dot">3</div><div class="tl-body"><div class="tl-title">We Dispute on Your Behalf</div><div class="tl-desc">Targeted, legally-compliant dispute letters sent to Equifax, Experian, and TransUnion every month.</div><span class="tl-chip">Monthly &amp; automatic</span></div></div>
+      <div class="tl-step" data-step><div class="tl-dot">4</div><div class="tl-body"><div class="tl-title">Track Progress in Real Time</div><div class="tl-desc">Every dispute update, every removed item — visible instantly in your portal. Email + SMS alerts.</div><span class="tl-chip">Real-time updates</span></div></div>
+      <div class="tl-step" data-step><div class="tl-dot">5</div><div class="tl-body"><div class="tl-title">Your Score Improves</div><div class="tl-desc">As items are removed and positive history builds, your score rises. Average +73 pts in 90 days.</div><span class="tl-chip">Avg. +73 pts in 90 days</span></div></div>
+      <div class="tl-step" data-step><div class="tl-dot">6</div><div class="tl-body"><div class="tl-title">Qualify for What Matters</div><div class="tl-desc">Better mortgage rates. Car loan approval. Higher limits. A better score unlocks the life you deserve.</div><span class="tl-chip">Your goal — achieved ✓</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--wh);">
+  <div class="container">
+    <div class="section-header reveal"><div class="eyebrow">Testimonials</div><h2>Stories Trusted<br>by Thousands</h2></div>
+    <div class="two-col" style="gap:32px;align-items:stretch;">
+      <div class="testi-featured reveal">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-text">nueCredit completely changed my financial situation. I went from 541 to 698 in under 4 months. My mortgage broker was shocked. We closed on our house last month.</p>
+        <div class="testi-author"><div class="testi-avatar">MJ</div><div><div class="testi-name">Marcus J.</div><div class="testi-meta">Atlanta, GA — Pro Plan</div></div><div class="testi-pts">+157 pts</div></div>
+      </div>
+      <div class="testi-grid reveal reveal-delay-1">
+        <div class="testi-mini"><div class="testi-stars">★★★★★</div><p class="testi-mini-text">"My car loan was denied twice. 3 months with nueCredit and I got approved at 4.9%."</p><div class="testi-mini-name">Destiny R.</div><div class="testi-mini-stat">Houston, TX — +91 pts in 3 months</div></div>
+        <div class="testi-mini"><div class="testi-stars">★★★★★</div><p class="testi-mini-text">"7 negative items removed. Score went from 588 to 671. Incredibly responsive team."</p><div class="testi-mini-name">Kevin T.</div><div class="testi-mini-stat">Chicago, IL — +83 pts in 4 months</div></div>
+        <div class="testi-mini"><div class="testi-stars">★★★★★</div><p class="testi-mini-text">"As a mortgage broker I send all declined clients here. They come back qualified."</p><div class="testi-mini-name">Sarah M.</div><div class="testi-mini-stat">Partner — Mortgage Broker, Dallas TX</div></div>
+        <div class="testi-mini"><div class="testi-stars">★★★★★</div><p class="testi-mini-text">"Signed up Friday. By Monday they had submitted 9 disputes. Most professional ever."</p><div class="testi-mini-name">Andre W.</div><div class="testi-mini-stat">Miami, FL — Premium Plan</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar section-sm">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-item reveal"><span class="stat-val">99%</span><span class="stat-lbl">Client Satisfaction Rate</span></div>
+      <div class="stat-item reveal reveal-delay-1"><span class="stat-val">+73pts</span><span class="stat-lbl">Average Score Improvement</span></div>
+      <div class="stat-item reveal reveal-delay-2"><span class="stat-val">85%</span><span class="stat-lbl">Items Successfully Disputed</span></div>
+      <div class="stat-item reveal reveal-delay-3"><span class="stat-val">1,200+</span><span class="stat-lbl">Clients Served Nationwide</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="pricing" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal"><div class="eyebrow">Pricing</div><h2>Simple, Affordable Plans</h2><p>No hidden fees. No contracts. Cancel anytime.</p></div>
+    <div class="pricing-grid">
+      <div class="price-card reveal reveal-delay-1">
+        <div class="price-name">Basic</div>
+        <div class="price-amount"><span class="price-num">$79</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $99 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>1 Bureau (your choice)</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Up to 5 disputes/month</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Credit report analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Monthly progress report</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Client portal access</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Email support</li>
+          <li class="price-feat"><span class="price-feat-check no">—</span>Tradeline strategy</li>
+          <li class="price-feat"><span class="price-feat-check no">—</span>Priority support</li>
+        </ul>
+        <a href="#" class="price-btn">Get Started</a>
+      </div>
+      <div class="price-card hot reveal">
+        <div class="price-pop">⭐ Most Popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amount"><span class="price-num">$149</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $149 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>All 3 Bureaus</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Up to 15 disputes/month</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Full credit analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Bi-weekly progress reports</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Full portal + score chart</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Email + chat support</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Tradeline strategy</li>
+          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Debt validation letters</li>
+        </ul>
+        <a href="#" class="price-btn hot-btn">Get Started</a>
+      </div>
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-name">Premium</div>
+        <div class="price-amount"><span class="price-num">$249</span><span class="price-per">/mo</span></div>
+        <div class="price-enroll">+ $199 one-time enrollment fee</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>All 3 Bureaus</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Unlimited disputes</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Full credit analysis</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Weekly progress reports</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Full portal + AI coach</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Priority phone support</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Dedicated credit coach</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Tradeline implementation</li>
+        </ul>
+        <a href="#" class="price-btn">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section partners-section">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal">
+        <div class="eyebrow" style="color:var(--gb);"><span style="background:var(--gb);width:18px;height:2px;border-radius:2px;display:block;"></span>For Partners</div>
+        <h2 style="color:#fff;font-size:clamp(28px,3.5vw,44px);font-weight:800;letter-spacing:-1.5px;margin-bottom:16px;">Turn Declined Clients<br>Into Monthly Income</h2>
+        <p style="font-size:16px;color:rgba(255,255,255,.42);line-height:1.72;margin-bottom:28px;max-width:440px;">Mortgage brokers, auto dealers, and real estate agents earn 10–15% on every client they refer. Fully passive. Zero cost to join.</p>
+        <a href="pages/partners.html" class="btn btn-primary btn-lg">Apply to Partner →</a>
+      </div>
+      <div class="partner-cards reveal reveal-delay-1">
+        <div class="partner-card"><div class="partner-icon">🚗</div><h4>Auto Dealers</h4><p>Recover credit-declined buyers. They come back ready to buy.</p></div>
+        <div class="partner-card"><div class="partner-icon">🏠</div><h4>Mortgage Brokers</h4><p>Turn denied applicants into future qualified closings.</p></div>
+        <div class="partner-card"><div class="partner-icon">🔑</div><h4>Real Estate Agents</h4><p>Buyers come back mortgage-ready and choose you to close.</p></div>
+        <div class="partner-card"><div class="partner-icon">💳</div><h4>Debt Consolidators</h4><p>Natural cross-referral partnership for mutual growth.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--wh);">
+  <div class="container">
+    <div class="blog-header reveal">
+      <div><div class="eyebrow">Blog</div><h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:800;letter-spacing:-1.2px;">Insights &amp; Tips About<br>Credit Repair</h2></div>
+      <a href="pages/blog.html" class="blog-see-all">See All Posts →</a>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card reveal reveal-delay-1"><div class="blog-thumb" style="background:var(--gl);">📊</div><div class="blog-body"><div class="blog-cat">Credit Basics</div><div class="blog-title">The Future of Credit Repair: Trends for 2025</div><div class="blog-exc">New FCRA amendments and AI-powered disputes — what it means for your restoration journey.</div><div class="blog-foot"><span class="blog-date">Jan 15, 2025</span><span class="blog-read">Read More →</span></div></div></div>
+      <div class="blog-card reveal reveal-delay-2"><div class="blog-thumb" style="background:#EEF5EE;">🏠</div><div class="blog-body"><div class="blog-cat">Mortgage</div><div class="blog-title">5 Ways to Improve Financial Habits Before Buying</div><div class="blog-exc">The credit steps mortgage brokers wish every buyer took 6 months before applying.</div><div class="blog-foot"><span class="blog-date">Jan 8, 2025</span><span class="blog-read">Read More →</span></div></div></div>
+      <div class="blog-card reveal reveal-delay-3"><div class="blog-thumb" style="background:var(--gl);">🔒</div><div class="blog-body"><div class="blog-cat">Security</div><div class="blog-title">Why Security Matters in the Age of Digital Payments</div><div class="blog-exc">Identity theft is at an all-time high. Here's how to protect your credit file proactively.</div><div class="blog-foot"><span class="blog-date">Jan 3, 2025</span><span class="blog-read">Read More →</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-banner">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="eyebrow light" style="justify-content:center;">Start Today — Takes 5 Minutes</div>
+      <h2>Ready To Take Control<br>Of Your Finances?</h2>
+      <p>Join 1,200+ clients who chose nueCredit. Cancel anytime.</p>
+      <a href="#pricing" class="btn btn-white btn-lg">Get Started Today</a>
+      <div class="cta-trust">
+        <div class="cta-trust-item">🔒 Secure Payment</div>
+        <div class="cta-trust-item">✓ CROA Compliant</div>
+        <div class="cta-trust-item">✓ Cancel Anytime</div>
+        <div class="cta-trust-item">✓ US-Based Team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="footer-logo">nueCredit</a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="pages/about.html">About Us</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="pages/blog.html">Blog</a></li>
+          <li><a href="pages/contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Basic Plan</a></li>
+          <li><a href="#">Pro Plan</a></li>
+          <li><a href="#">Premium Plan</a></li>
+          <li><a href="#">Free Audit</a></li>
+          <li><a href="#">Score Simulator</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="pages/partners.html">Partner Program</a></li>
+          <li><a href="#">Partner Login</a></li>
+          <li><a href="#">Apply Now</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">CROA Disclosure</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
