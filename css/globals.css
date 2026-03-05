@@ -46,6 +46,11 @@ img { max-width: 100%; display: block; }
   --r-lg:      20px;
   --shadow:    0 4px 24px rgba(0,0,0,.07);
   --shadow-lg: 0 20px 60px rgba(0,0,0,.13);
+
+  /* VIP / Quick Fix */
+  --gold:   #D4A017;
+  --gold-l: #F5E6B8;
+  --gold-d: #A67C00;
 }
 
 /* ── TYPOGRAPHY ─────────────────────────────────────────────── */
@@ -214,6 +219,27 @@ nav {
 .price-btn.hot-btn { background: var(--g); color: #fff; border-color: var(--g); }
 .price-btn.hot-btn:hover { background: var(--gb); border-color: var(--gb); }
 
+/* ── VIP / QUICK FIX PRICING CARD ──────────────────────────── */
+.price-card.vip {
+  background: linear-gradient(145deg, #111 0%, #1a1a1a 100%);
+  border: 1px solid rgba(212,160,23,.25); position: relative; overflow: hidden;
+}
+.price-card.vip::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold-d), var(--gold), var(--gold-d)); }
+.price-card.vip .price-name { color: var(--gold); }
+.price-card.vip .price-num { color: #fff; }
+.price-card.vip .price-per, .price-card.vip .price-enroll { color: rgba(255,255,255,.35); }
+.price-card.vip .price-divider { background: rgba(255,255,255,.08); }
+.price-card.vip .price-feat { color: rgba(255,255,255,.6); }
+.price-card.vip .price-feat-check.yes { color: var(--gold); }
+.price-card.vip .price-btn { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 700; }
+.price-card.vip .price-btn:hover { background: var(--gold-d); border-color: var(--gold-d); color: #fff; }
+.price-pop.vip-pop { background: linear-gradient(90deg, var(--gold-d), var(--gold)); color: #111; }
+.pricing-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: start; }
+
+/* ── VIP NAV LINK ──────────────────────────────────────────── */
+.nav-links a.nav-vip { color: var(--gold) !important; }
+.nav-links a.nav-vip:hover { color: var(--gold-l) !important; }
+
 /* ── TESTIMONIALS ───────────────────────────────────────────── */
 .testi-featured { background: var(--bk); border-radius: var(--r-lg); padding: 28px; height: 100%; }
 .testi-quote-mark { font-family: 'Sora', sans-serif; font-size: 72px; font-weight: 800; color: var(--gl); line-height: .7; margin-bottom: 6px; }
@@ -299,6 +325,7 @@ footer { background: var(--bk); padding: 64px 0 28px; }
   .hero-grid, .two-col { grid-template-columns: 1fr; }
   .dashboard { display: none; }
   .cards-grid-3, .pricing-grid, .blog-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid-4 { grid-template-columns: 1fr 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .bento-grid { grid-template-columns: 1fr; }
@@ -309,6 +336,7 @@ footer { background: var(--bk); padding: 64px 0 28px; }
 @media (max-width: 600px) {
   .section { padding: 72px 0; }
   .cards-grid-3, .pricing-grid, .blog-grid { grid-template-columns: 1fr; }
+  .pricing-grid-4 { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .stat-item { padding: 20px 12px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }
