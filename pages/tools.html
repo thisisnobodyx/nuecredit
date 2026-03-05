@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Credit Tools — nueCredit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="../css/globals.css">
+<style>
+.page-hero { background: var(--bk) url('../images/hero-bg.png') center/cover no-repeat; padding: 140px 0 80px; position: relative; overflow: hidden; }
+.hero-center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.page-hero h1 { font-size: clamp(36px,5vw,60px); font-weight:800; color:#fff; letter-spacing:-2.5px; line-height:1.05; margin-bottom:18px; }
+.page-hero h1 span { color:var(--gb); }
+.page-hero p { font-size:18px; color:rgba(255,255,255,.45); line-height:1.72; max-width:580px; margin:0 auto 36px; }
+.page-hero .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.22); color:var(--gb); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px; margin-bottom:24px; }
+.page-hero .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gb); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+
+/* Tool cards */
+.tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.tool-card {
+  background: var(--wh); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 32px; text-align: center;
+  transition: all .25s; cursor: pointer; position: relative; overflow: hidden;
+}
+.tool-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--g); transform: scaleX(0); transition: transform .3s; transform-origin: left;
+}
+.tool-card:hover::before { transform: scaleX(1); }
+.tool-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: rgba(0,134,1,.2); }
+.tool-icon { font-size: 40px; margin-bottom: 16px; }
+.tool-card h3 { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; color: var(--tx); margin-bottom: 8px; }
+.tool-card p { font-size: 14px; color: var(--tl); line-height: 1.65; margin-bottom: 16px; }
+.tool-link { font-size: 14px; font-weight: 600; color: var(--g); display: inline-flex; align-items: center; gap: 4px; transition: gap .2s; }
+.tool-card:hover .tool-link { gap: 8px; }
+
+/* Forms shared */
+.tool-section { scroll-margin-top: 80px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--tx); }
+.form-input {
+  padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx);
+  transition: border-color .2s; outline: none; background: var(--wh);
+}
+.form-input:focus { border-color: var(--g); }
+.form-select {
+  padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx);
+  background: var(--wh); outline: none; cursor: pointer;
+}
+.form-select:focus { border-color: var(--g); }
+.form-textarea {
+  padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx);
+  transition: border-color .2s; outline: none; background: var(--wh);
+  resize: vertical; min-height: 120px;
+}
+.form-textarea:focus { border-color: var(--g); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-submit {
+  width: 100%; padding: 14px; background: var(--g); color: #fff; border: none;
+  border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 15px;
+  font-weight: 700; cursor: pointer; transition: all .2s;
+}
+.form-submit:hover { background: var(--gb); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,134,1,.3); }
+.form-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
+.tool-form-wrap {
+  max-width: 680px; margin: 0 auto;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 36px;
+}
+.tool-form-wrap.on-white { background: var(--wh); border-color: var(--border); }
+
+/* Results shared */
+.result-area { display: none; margin-top: 32px; }
+.result-area.visible { display: block; animation: fadeInResult .5s ease; }
+@keyframes fadeInResult { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.result-card {
+  background: var(--wh); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 32px; position: relative;
+}
+.result-card.on-light { background: var(--bg); }
+
+/* Score gauge */
+.score-gauge { display: flex; align-items: center; justify-content: center; gap: 32px; margin-bottom: 28px; flex-wrap: wrap; }
+.gauge-bar-wrap { flex: 1; min-width: 220px; max-width: 400px; }
+.gauge-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--gm); margin-bottom: 6px; }
+.gauge-track {
+  width: 100%; height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, #dc2626 0%, #f59e0b 30%, #eab308 50%, #84cc16 70%, #22c55e 100%);
+  position: relative; overflow: visible;
+}
+.gauge-marker {
+  position: absolute; top: -4px; width: 4px; height: 20px; border-radius: 2px;
+  background: var(--bk); border: 2px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  transition: left .6s ease;
+}
+.gauge-range {
+  position: absolute; top: -4px; height: 20px; border-radius: 4px;
+  background: rgba(0,134,1,.25); border: 1px solid rgba(0,134,1,.4);
+  transition: all .6s ease;
+}
+.score-display { text-align: center; flex-shrink: 0; }
+.score-display .score-est { font-family: 'Sora', sans-serif; font-size: 48px; font-weight: 800; color: var(--g); letter-spacing: -2px; line-height: 1; }
+.score-display .score-label { font-size: 12px; color: var(--gm); margin-top: 4px; }
+
+/* Impact badges */
+.impact-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; padding: 5px 14px;
+  border-radius: 100px; margin-bottom: 16px;
+}
+.impact-badge.positive { background: rgba(0,134,1,.1); border: 1px solid rgba(0,134,1,.22); color: var(--g); }
+.impact-badge.negative { background: rgba(220,38,38,.08); border: 1px solid rgba(220,38,38,.2); color: #dc2626; }
+.impact-badge.neutral { background: rgba(144,144,144,.1); border: 1px solid rgba(144,144,144,.2); color: var(--gm); }
+
+/* Result sections */
+.result-section { margin-bottom: 20px; }
+.result-section:last-child { margin-bottom: 0; }
+.result-section-title {
+  font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--tx); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.result-section-title::before {
+  content: ''; width: 3px; height: 16px; border-radius: 2px; background: var(--g); display: block;
+}
+.result-text { font-size: 14px; color: var(--tl); line-height: 1.72; }
+.result-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.result-list li {
+  display: flex; gap: 8px; font-size: 13px; color: var(--tl); align-items: flex-start; line-height: 1.55;
+}
+.result-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--g); flex-shrink: 0; margin-top: 6px; }
+.result-list.recs li::before { background: var(--gb); }
+
+/* Letter display */
+.letter-display {
+  background: #FAFAFA; border: 1px solid var(--border); border-radius: var(--r);
+  padding: 28px; font-family: 'DM Sans', Georgia, serif; font-size: 13.5px;
+  color: var(--tx); line-height: 1.8; white-space: pre-wrap; word-wrap: break-word;
+  max-height: 480px; overflow-y: auto; position: relative;
+}
+.letter-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.btn-copy {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; background: var(--bk); color: #fff; border: none;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.btn-copy:hover { background: var(--d2); transform: translateY(-1px); }
+.btn-copy.copied { background: var(--g); }
+
+/* Filing tips */
+.filing-tips {
+  background: rgba(0,134,1,.04); border: 1px solid rgba(0,134,1,.12);
+  border-radius: var(--r); padding: 20px; margin-top: 16px;
+}
+.filing-tips h4 {
+  font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--g); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.filing-tips ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.filing-tips li { font-size: 12px; color: var(--tl); line-height: 1.6; display: flex; gap: 6px; }
+.filing-tips li::before { content: ''; font-size: 10px; color: var(--g); font-weight: 700; flex-shrink: 0; }
+
+/* Severity badges */
+.severity {
+  display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 10px;
+  border-radius: 100px; text-transform: uppercase; letter-spacing: .8px;
+}
+.severity.high { background: rgba(220,38,38,.1); color: #dc2626; }
+.severity.medium { background: rgba(234,179,8,.12); color: #b45309; }
+.severity.low { background: rgba(0,134,1,.1); color: var(--g); }
+
+/* Negative items table */
+.neg-items { display: flex; flex-direction: column; gap: 8px; }
+.neg-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; background: var(--wh); border: 1px solid var(--border);
+  border-radius: 10px; font-size: 13px; color: var(--tx);
+}
+.neg-item .neg-name { flex: 1; font-weight: 600; }
+.neg-item .neg-type { font-size: 11px; color: var(--gm); flex-shrink: 0; }
+
+/* Action plan timeline */
+.action-timeline { display: flex; flex-direction: column; gap: 0; position: relative; padding-left: 24px; }
+.action-timeline::before {
+  content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+  width: 2px; background: var(--border);
+}
+.action-step { padding: 12px 0; position: relative; }
+.action-step::before {
+  content: ''; position: absolute; left: -24px; top: 16px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--wh); border: 2px solid var(--g);
+}
+.action-step:first-child::before { background: var(--g); }
+.action-step-time { font-size: 11px; font-weight: 700; color: var(--g); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+.action-step-text { font-size: 13px; color: var(--tl); line-height: 1.6; }
+
+/* Loading spinner */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2.5px solid rgba(255,255,255,.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error box */
+.error-box {
+  display: none; text-align: center; margin-top: 12px; padding: 10px;
+  background: rgba(220,38,38,.08); border: 1px solid rgba(220,38,38,.2);
+  border-radius: 8px; color: #dc2626; font-size: 13px;
+}
+
+/* Analyzer summary stats */
+.analyzer-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.analyzer-stat {
+  text-align: center; padding: 16px; border-radius: var(--r);
+  background: var(--wh); border: 1px solid var(--border);
+}
+.analyzer-stat-val { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: var(--tx); line-height: 1; margin-bottom: 4px; }
+.analyzer-stat-val.bad { color: #dc2626; }
+.analyzer-stat-val.warn { color: #b45309; }
+.analyzer-stat-val.good { color: var(--g); }
+.analyzer-stat-lbl { font-size: 11px; color: var(--gm); }
+
+@media (max-width: 900px) {
+  .tools-grid { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .score-gauge { flex-direction: column; gap: 20px; }
+  .analyzer-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .tools-grid { grid-template-columns: 1fr; }
+  .tool-form-wrap { padding: 24px; }
+  .analyzer-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="tools.html" class="active">Tools</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+      <a href="get-started.html" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="how-it-works.html">How It Works</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
+  <a href="about.html">About</a>
+  <a href="partners.html">Partners</a>
+  <a href="tools.html">Tools</a>
+  <a href="contact.html">Contact</a>
+  <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-center">
+      <div class="hero-badge"><div class="hero-badge-dot"></div>AI-Powered</div>
+      <h1>Smart Credit <span>Tools.</span></h1>
+      <p>Free AI-powered tools to help you understand your credit, simulate score changes, generate dispute letters, and analyze your credit report.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <a href="#simulator" class="btn btn-primary btn-lg">Try the Simulator</a>
+        <a href="#dispute-letter" class="btn btn-ghost btn-lg">Generate a Letter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOL CARDS -->
+<section class="section-sm" style="background:var(--bg);">
+  <div class="container">
+    <div class="tools-grid">
+      <div class="tool-card reveal" onclick="document.getElementById('simulator').scrollIntoView({behavior:'smooth'})">
+        <div class="tool-icon">📊</div>
+        <h3>Credit Score Simulator</h3>
+        <p>See how actions like paying off debt or removing negative items might affect your credit score.</p>
+        <span class="tool-link">Try Simulator →</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-1" onclick="document.getElementById('dispute-letter').scrollIntoView({behavior:'smooth'})">
+        <div class="tool-icon">📝</div>
+        <h3>Dispute Letter Generator</h3>
+        <p>Create professional, bureau-ready dispute letters instantly with AI assistance.</p>
+        <span class="tool-link">Generate Letter →</span>
+      </div>
+      <div class="tool-card reveal reveal-delay-2" onclick="document.getElementById('report-analyzer').scrollIntoView({behavior:'smooth'})">
+        <div class="tool-icon">🔍</div>
+        <h3>Credit Report Analyzer</h3>
+        <p>Get an AI-powered analysis of your credit report with actionable recommendations.</p>
+        <span class="tool-link">Analyze Report →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDIT SCORE SIMULATOR -->
+<section class="section tool-section" id="simulator">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow">Tool #1</div>
+      <h2>Credit Score Simulator</h2>
+      <p>Enter your current score and a hypothetical action to see how it might impact your credit.</p>
+    </div>
+    <div class="tool-form-wrap on-white reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Current Credit Score</label>
+          <input type="number" class="form-input" placeholder="e.g. 620" min="300" max="850" id="simScore">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Action</label>
+          <select class="form-select" id="simAction">
+            <option value="">Select an action...</option>
+            <option value="pay_debt">Pay off a debt</option>
+            <option value="remove_late">Remove a late payment</option>
+            <option value="paydown_card">Pay down credit card balance</option>
+            <option value="new_account">Open a new credit account</option>
+            <option value="close_account">Close an old account</option>
+            <option value="remove_collection">Remove a collection</option>
+            <option value="remove_inquiry">Hard inquiry removal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amount (optional)</label>
+        <input type="number" class="form-input" placeholder="e.g. 5000" id="simAmount">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Additional Details (optional)</label>
+        <textarea class="form-textarea" placeholder="Any additional context, such as account age, current balance, etc." id="simDetails" style="min-height:80px;"></textarea>
+      </div>
+      <button class="form-submit" id="simBtn" onclick="simulateScore()">Simulate Impact →</button>
+      <div class="error-box" id="simError"></div>
+    </div>
+
+    <!-- Simulator results -->
+    <div class="result-area" id="simResults">
+      <div class="result-card" style="max-width:680px;margin:0 auto;">
+        <div class="score-gauge">
+          <div class="gauge-bar-wrap">
+            <div class="gauge-labels"><span>300</span><span>500</span><span>650</span><span>750</span><span>850</span></div>
+            <div class="gauge-track">
+              <div class="gauge-marker" id="simMarkerCurrent" style="left:0%;"></div>
+              <div class="gauge-range" id="simRange" style="left:0%;width:0%;"></div>
+            </div>
+          </div>
+          <div class="score-display">
+            <div class="score-est" id="simEstScore">—</div>
+            <div class="score-label">Estimated Score</div>
+          </div>
+        </div>
+        <div id="simImpactBadge"></div>
+        <div class="result-section">
+          <div class="result-section-title">Explanation</div>
+          <div class="result-text" id="simExplanation"></div>
+        </div>
+        <div class="result-section">
+          <div class="result-section-title">Factors Affected</div>
+          <ul class="result-list" id="simFactors"></ul>
+        </div>
+        <div class="result-section">
+          <div class="result-section-title">Recommendations</div>
+          <ul class="result-list recs" id="simRecs"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DISPUTE LETTER GENERATOR -->
+<section class="section tool-section" id="dispute-letter" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow">Tool #2</div>
+      <h2>Dispute Letter Generator</h2>
+      <p>Generate a professional, bureau-ready dispute letter in seconds. Just fill in the details below.</p>
+    </div>
+    <div class="tool-form-wrap reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dispute Type</label>
+          <select class="form-select" id="dlType">
+            <option value="">Select type...</option>
+            <option value="late_payment">Late Payment</option>
+            <option value="collection">Collection Account</option>
+            <option value="hard_inquiry">Hard Inquiry</option>
+            <option value="identity_theft">Identity Theft / Fraud</option>
+            <option value="incorrect_info">Incorrect Personal Info</option>
+            <option value="not_mine">Account Not Mine</option>
+            <option value="duplicate">Duplicate Account</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Credit Bureau</label>
+          <select class="form-select" id="dlBureau">
+            <option value="">Select bureau...</option>
+            <option value="equifax">Equifax</option>
+            <option value="experian">Experian</option>
+            <option value="transunion">TransUnion</option>
+            <option value="all">All Three Bureaus</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Creditor / Company Name</label>
+          <input type="text" class="form-input" placeholder="e.g. Chase Bank" id="dlCreditor">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Number (Last 4 Digits)</label>
+          <input type="text" class="form-input" placeholder="e.g. 4821" maxlength="4" id="dlAccount">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reason for Dispute</label>
+        <textarea class="form-textarea" placeholder="Explain why you believe this item is inaccurate or should be removed..." id="dlReason"></textarea>
+      </div>
+      <button class="form-submit" id="dlBtn" onclick="generateLetter()">Generate Letter →</button>
+      <div class="error-box" id="dlError"></div>
+    </div>
+
+    <!-- Letter results -->
+    <div class="result-area" id="dlResults">
+      <div class="result-card on-light" style="max-width:680px;margin:0 auto;">
+        <div class="result-section-title" style="margin-bottom:16px;">Your Dispute Letter</div>
+        <div class="letter-display" id="dlLetterText"></div>
+        <div class="letter-actions">
+          <button class="btn-copy" id="dlCopyBtn" onclick="copyToClipboard(document.getElementById('dlLetterText').textContent, 'dlCopyBtn')">📋 Copy to Clipboard</button>
+        </div>
+        <div class="filing-tips">
+          <h4>📬 Filing Instructions</h4>
+          <ul>
+            <li>Print this letter and send it via certified mail with return receipt requested.</li>
+            <li>Include a copy of your government-issued photo ID and a recent utility bill or bank statement as proof of address.</li>
+            <li>Keep a copy of everything you send for your records.</li>
+            <li>The bureau is required by law to investigate within 30 days of receiving your dispute.</li>
+            <li>If the item cannot be verified, it must be removed from your credit report.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREDIT REPORT ANALYZER -->
+<section class="section tool-section" id="report-analyzer">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow">Tool #3</div>
+      <h2>Credit Report Analyzer</h2>
+      <p>Paste your credit report information below and our AI will identify negative items, dispute opportunities, and quick wins.</p>
+    </div>
+    <div class="tool-form-wrap on-white reveal">
+      <div class="form-group">
+        <label class="form-label">Credit Report Data</label>
+        <textarea class="form-textarea" placeholder="Paste your credit report information here. Include account names, statuses, balances, payment history, and any negative remarks..." id="arReport" style="min-height:200px;"></textarea>
+      </div>
+      <button class="form-submit" id="arBtn" onclick="analyzeReport()">Analyze Report →</button>
+      <div class="error-box" id="arError"></div>
+    </div>
+
+    <!-- Analyzer results -->
+    <div class="result-area" id="arResults">
+      <div style="max-width:680px;margin:0 auto;">
+        <!-- Summary stats -->
+        <div class="analyzer-stats" id="arStats"></div>
+
+        <!-- Summary -->
+        <div class="result-card" style="margin-bottom:16px;">
+          <div class="result-section">
+            <div class="result-section-title">Summary</div>
+            <div class="result-text" id="arSummary"></div>
+          </div>
+        </div>
+
+        <!-- Negative items -->
+        <div class="result-card" style="margin-bottom:16px;">
+          <div class="result-section">
+            <div class="result-section-title">Negative Items Found</div>
+            <div class="neg-items" id="arNegItems"></div>
+          </div>
+        </div>
+
+        <!-- Dispute opportunities -->
+        <div class="result-card" style="margin-bottom:16px;">
+          <div class="result-section">
+            <div class="result-section-title">Dispute Opportunities</div>
+            <ul class="result-list" id="arDisputes"></ul>
+          </div>
+        </div>
+
+        <!-- Quick wins -->
+        <div class="result-card" style="margin-bottom:16px;">
+          <div class="result-section">
+            <div class="result-section-title">Quick Wins</div>
+            <ul class="result-list recs" id="arQuickWins"></ul>
+          </div>
+        </div>
+
+        <!-- Action plan -->
+        <div class="result-card">
+          <div class="result-section">
+            <div class="result-section-title">Recommended Action Plan</div>
+            <div class="action-timeline" id="arTimeline"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta-banner">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="eyebrow light" style="justify-content:center;">Let the Pros Handle It</div>
+      <h2>Ready to Fix<br>Your Credit?</h2>
+      <p>Our AI tools are a great start — but our experts deliver real results. Get professional credit restoration starting at $79/mo.</p>
+      <a href="get-started.html" class="btn btn-white btn-lg">Get Started Today</a>
+      <div class="cta-trust">
+        <div class="cta-trust-item">🔒 Secure & Private</div>
+        <div class="cta-trust-item">✓ CROA Compliant</div>
+        <div class="cta-trust-item">✓ Cancel Anytime</div>
+        <div class="cta-trust-item">✓ US-Based Team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Basic Plan</a></li>
+          <li><a href="#">Pro Plan</a></li>
+          <li><a href="#">Premium Plan</a></li>
+          <li><a href="quick-fix.html">Quick Fix (VIP)</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="partners.html">Partner Program</a></li>
+          <li><a href="#">Partner Login</a></li>
+          <li><a href="partners.html#apply">Apply Now</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">CROA Disclosure</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+/* ── UTILITY: Copy to clipboard ───────────────────────────── */
+function copyToClipboard(text, btnId) {
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById(btnId);
+    var orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    /* Fallback */
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    var btn = document.getElementById(btnId);
+    var orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.innerHTML = orig;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+/* ── Helper: set button loading state ─────────────────────── */
+function setLoading(btn, loading, originalText) {
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Processing...';
+  } else {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+}
+
+/* ── Helper: show error ───────────────────────────────────── */
+function showError(id, msg) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideError(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+/* ── Helper: position on gauge (300–850 scale) ────────────── */
+function scoreToPercent(score) {
+  return Math.max(0, Math.min(100, ((score - 300) / 550) * 100));
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOOL 1: Credit Score Simulator
+   ══════════════════════════════════════════════════════════════ */
+async function simulateScore() {
+  var btn = document.getElementById('simBtn');
+  hideError('simError');
+
+  var currentScore = parseInt(document.getElementById('simScore').value);
+  var action = document.getElementById('simAction').value;
+  var amount = document.getElementById('simAmount').value;
+  var details = document.getElementById('simDetails').value.trim();
+
+  if (!currentScore || currentScore < 300 || currentScore > 850) {
+    showError('simError', 'Please enter a valid credit score between 300 and 850.');
+    return;
+  }
+  if (!action) {
+    showError('simError', 'Please select an action to simulate.');
+    return;
+  }
+
+  setLoading(btn, true);
+
+  try {
+    var res = await fetch('/api/ai/score-simulator', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        currentScore: currentScore,
+        action: action,
+        amount: amount ? parseFloat(amount) : null,
+        details: details
+      })
+    });
+    var data = await res.json();
+
+    if (!res.ok || !data.success) {
+      showError('simError', data.error || 'Something went wrong. Please try again.');
+      return;
+    }
+
+    displaySimResults(data, currentScore);
+  } catch (err) {
+    showError('simError', 'Network error. Please check your connection and try again.');
+  } finally {
+    setLoading(btn, false, 'Simulate Impact →');
+  }
+}
+
+function displaySimResults(data, currentScore) {
+  var r = data.result || data;
+
+  /* Estimated score */
+  var estLow = r.estimatedScoreLow || (currentScore + (r.pointChange || 0) - 10);
+  var estHigh = r.estimatedScoreHigh || (currentScore + (r.pointChange || 0) + 10);
+  var estMid = Math.round((estLow + estHigh) / 2);
+
+  document.getElementById('simEstScore').textContent = estLow + '–' + estHigh;
+
+  /* Gauge markers */
+  var currentPct = scoreToPercent(currentScore);
+  var lowPct = scoreToPercent(estLow);
+  var highPct = scoreToPercent(estHigh);
+  document.getElementById('simMarkerCurrent').style.left = currentPct + '%';
+  document.getElementById('simRange').style.left = lowPct + '%';
+  document.getElementById('simRange').style.width = (highPct - lowPct) + '%';
+
+  /* Impact badge */
+  var impact = r.impact || 'neutral';
+  var badgeHTML = '';
+  if (impact === 'positive') {
+    badgeHTML = '<div class="impact-badge positive">↑ Positive Impact</div>';
+  } else if (impact === 'negative') {
+    badgeHTML = '<div class="impact-badge negative">↓ Negative Impact</div>';
+  } else {
+    badgeHTML = '<div class="impact-badge neutral">→ Neutral / Minimal Impact</div>';
+  }
+  document.getElementById('simImpactBadge').innerHTML = badgeHTML;
+
+  /* Explanation */
+  document.getElementById('simExplanation').textContent = r.explanation || 'No additional explanation available.';
+
+  /* Factors */
+  var factorsEl = document.getElementById('simFactors');
+  factorsEl.innerHTML = '';
+  var factors = r.factors || [];
+  factors.forEach(function(f) {
+    var li = document.createElement('li');
+    li.textContent = f;
+    factorsEl.appendChild(li);
+  });
+
+  /* Recommendations */
+  var recsEl = document.getElementById('simRecs');
+  recsEl.innerHTML = '';
+  var recs = r.recommendations || [];
+  recs.forEach(function(rec) {
+    var li = document.createElement('li');
+    li.textContent = rec;
+    recsEl.appendChild(li);
+  });
+
+  /* Show results */
+  var area = document.getElementById('simResults');
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOOL 2: Dispute Letter Generator
+   ══════════════════════════════════════════════════════════════ */
+async function generateLetter() {
+  var btn = document.getElementById('dlBtn');
+  hideError('dlError');
+
+  var type = document.getElementById('dlType').value;
+  var bureau = document.getElementById('dlBureau').value;
+  var creditor = document.getElementById('dlCreditor').value.trim();
+  var account = document.getElementById('dlAccount').value.trim();
+  var reason = document.getElementById('dlReason').value.trim();
+
+  if (!type) {
+    showError('dlError', 'Please select a dispute type.');
+    return;
+  }
+  if (!bureau) {
+    showError('dlError', 'Please select a credit bureau.');
+    return;
+  }
+  if (!creditor) {
+    showError('dlError', 'Please enter the creditor or company name.');
+    return;
+  }
+  if (!reason) {
+    showError('dlError', 'Please provide a reason for your dispute.');
+    return;
+  }
+
+  setLoading(btn, true);
+
+  try {
+    var res = await fetch('/api/ai/dispute-letter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        disputeType: type,
+        bureau: bureau,
+        creditorName: creditor,
+        accountLast4: account,
+        reason: reason
+      })
+    });
+    var data = await res.json();
+
+    if (!res.ok || !data.success) {
+      showError('dlError', data.error || 'Something went wrong. Please try again.');
+      return;
+    }
+
+    displayLetterResults(data);
+  } catch (err) {
+    showError('dlError', 'Network error. Please check your connection and try again.');
+  } finally {
+    setLoading(btn, false, 'Generate Letter →');
+  }
+}
+
+function displayLetterResults(data) {
+  var r = data.result || data;
+  var letter = r.letter || r.text || 'Unable to generate letter. Please try again.';
+
+  document.getElementById('dlLetterText').textContent = letter;
+
+  var area = document.getElementById('dlResults');
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOOL 3: Credit Report Analyzer
+   ══════════════════════════════════════════════════════════════ */
+async function analyzeReport() {
+  var btn = document.getElementById('arBtn');
+  hideError('arError');
+
+  var report = document.getElementById('arReport').value.trim();
+
+  if (!report || report.length < 50) {
+    showError('arError', 'Please paste your credit report information (at least 50 characters).');
+    return;
+  }
+
+  setLoading(btn, true);
+
+  try {
+    var res = await fetch('/api/ai/report-analyzer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reportText: report })
+    });
+    var data = await res.json();
+
+    if (!res.ok || !data.success) {
+      showError('arError', data.error || 'Something went wrong. Please try again.');
+      return;
+    }
+
+    displayAnalyzerResults(data);
+  } catch (err) {
+    showError('arError', 'Network error. Please check your connection and try again.');
+  } finally {
+    setLoading(btn, false, 'Analyze Report →');
+  }
+}
+
+function displayAnalyzerResults(data) {
+  var r = data.result || data;
+
+  /* Summary stats */
+  var statsEl = document.getElementById('arStats');
+  var stats = r.stats || {};
+  statsEl.innerHTML =
+    '<div class="analyzer-stat"><div class="analyzer-stat-val' + (stats.negativeItems > 3 ? ' bad' : stats.negativeItems > 0 ? ' warn' : ' good') + '">' + (stats.negativeItems || 0) + '</div><div class="analyzer-stat-lbl">Negative Items</div></div>' +
+    '<div class="analyzer-stat"><div class="analyzer-stat-val good">' + (stats.disputeOpportunities || 0) + '</div><div class="analyzer-stat-lbl">Dispute Opportunities</div></div>' +
+    '<div class="analyzer-stat"><div class="analyzer-stat-val good">' + (stats.quickWins || 0) + '</div><div class="analyzer-stat-lbl">Quick Wins</div></div>' +
+    '<div class="analyzer-stat"><div class="analyzer-stat-val">' + (stats.totalAccounts || 0) + '</div><div class="analyzer-stat-lbl">Total Accounts</div></div>';
+
+  /* Summary text */
+  document.getElementById('arSummary').textContent = r.summary || 'Analysis complete.';
+
+  /* Negative items */
+  var negEl = document.getElementById('arNegItems');
+  negEl.innerHTML = '';
+  var negItems = r.negativeItems || [];
+  if (negItems.length === 0) {
+    negEl.innerHTML = '<p style="font-size:13px;color:var(--tl);">No negative items identified.</p>';
+  } else {
+    negItems.forEach(function(item) {
+      var sev = (item.severity || 'medium').toLowerCase();
+      var div = document.createElement('div');
+      div.className = 'neg-item';
+      div.innerHTML =
+        '<span class="neg-name">' + (item.name || item.account || 'Unknown') + '</span>' +
+        '<span class="neg-type">' + (item.type || '') + '</span>' +
+        '<span class="severity ' + sev + '">' + sev + '</span>';
+      negEl.appendChild(div);
+    });
+  }
+
+  /* Dispute opportunities */
+  var dispEl = document.getElementById('arDisputes');
+  dispEl.innerHTML = '';
+  var disputes = r.disputeOpportunities || r.disputes || [];
+  disputes.forEach(function(d) {
+    var li = document.createElement('li');
+    li.textContent = typeof d === 'string' ? d : d.description || d.text || '';
+    dispEl.appendChild(li);
+  });
+  if (disputes.length === 0) {
+    dispEl.innerHTML = '<li>No specific dispute opportunities identified at this time.</li>';
+  }
+
+  /* Quick wins */
+  var qwEl = document.getElementById('arQuickWins');
+  qwEl.innerHTML = '';
+  var quickWins = r.quickWins || [];
+  quickWins.forEach(function(qw) {
+    var li = document.createElement('li');
+    li.textContent = typeof qw === 'string' ? qw : qw.description || qw.text || '';
+    qwEl.appendChild(li);
+  });
+  if (quickWins.length === 0) {
+    qwEl.innerHTML = '<li>Paste more detailed report data to identify quick wins.</li>';
+  }
+
+  /* Action plan timeline */
+  var tlEl = document.getElementById('arTimeline');
+  tlEl.innerHTML = '';
+  var timeline = r.actionPlan || r.timeline || [];
+  timeline.forEach(function(step) {
+    var div = document.createElement('div');
+    div.className = 'action-step';
+    div.innerHTML =
+      '<div class="action-step-time">' + (step.timeframe || step.time || '') + '</div>' +
+      '<div class="action-step-text">' + (step.action || step.text || step.description || '') + '</div>';
+    tlEl.appendChild(div);
+  });
+  if (timeline.length === 0) {
+    tlEl.innerHTML = '<div class="action-step"><div class="action-step-time">Week 1</div><div class="action-step-text">Begin by disputing the highest-impact negative items identified above.</div></div>';
+  }
+
+  /* Show results */
+  var area = document.getElementById('arResults');
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

@@ -131,6 +131,7 @@
       <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="partners.html">Partners</a></li>
+      <li><a href="tools.html">Tools</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-cta">
@@ -146,6 +147,7 @@
   <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
   <a href="about.html">About</a>
   <a href="partners.html">Partners</a>
+  <a href="tools.html">Tools</a>
   <a href="contact.html">Contact</a>
   <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
 </div>
@@ -299,6 +301,19 @@
         </div>
       </div>
 
+      <!-- STEP 4: Success / Confirmation (hidden) -->
+      <div class="step-panel" id="panel4">
+        <div class="form-card" style="text-align:center;padding:52px 36px;">
+          <div style="font-size:56px;margin-bottom:20px;" id="successIcon">🎉</div>
+          <div class="form-card-title" id="successTitle" style="font-size:26px;margin-bottom:12px;">You're All Set!</div>
+          <p id="successMessage" style="font-size:16px;color:var(--tl);line-height:1.72;max-width:480px;margin:0 auto 28px;">Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours to get your credit restoration started.</p>
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:center;">
+            <a href="../index.html" class="btn btn-primary btn-lg" style="min-width:220px;">Return Home</a>
+            <a href="contact.html" style="font-size:14px;color:var(--g);font-weight:600;">Have questions? Contact Us →</a>
+          </div>
+        </div>
+      </div>
+
       <!-- Trust strip -->
       <div class="trust-strip">
         <div class="trust-strip-item">🔒 256-bit Encryption</div>
@@ -324,6 +339,7 @@
           <li><a href="about.html">About Us</a></li>
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -357,37 +373,70 @@
 <script>
 let currentStep = 1;
 let selectedPlan = { name: 'pro', monthly: 149, enroll: 149 };
+let referralCode = null;
 
+/* ── URL Parameter Handling ───────────────────── */
+(function handleURLParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  // Handle ?plan=quickfix (from Quick Fix page CTAs)
+  const planParam = params.get('plan');
+  if (planParam === 'quickfix') {
+    setTimeout(() => {
+      const vipOption = document.querySelector('.plan-option.vip-plan');
+      if (vipOption) { selectPlan(vipOption, 'quickfix', 0, 0); goToStep(2); }
+    }, 300);
+  }
+
+  // Handle ?ref=PARTNER_CODE (referral tracking)
+  const refParam = params.get('ref');
+  if (refParam) {
+    referralCode = refParam;
+    document.getElementById('referral').checked = true;
+  }
+
+  // Handle ?success=true (returning from Stripe)
+  if (params.get('success') === 'true') {
+    setTimeout(() => showSuccess(
+      '🎉',
+      'Payment Received!',
+      'Your payment was successful and your credit restoration journey starts now. A nueCredit specialist will contact you within 24 hours to begin working on your case.'
+    ), 300);
+  }
+
+  // Handle ?canceled=true (Stripe canceled)
+  if (params.get('canceled') === 'true') {
+    setTimeout(() => goToStep(2), 300);
+  }
+})();
+
+/* ── Step Navigation ──────────────────────────── */
 function goToStep(step) {
-  if (step < 1 || step > 3) return;
+  if (step < 1 || step > 4) return;
   currentStep = step;
 
-  // Update panels
   document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel' + step).classList.add('active');
 
-  // Update dots
-  document.querySelectorAll('.step-dot').forEach((dot, i) => {
-    const s = i + 1;
-    dot.className = 'step-dot';
-    if (s < step) dot.classList.add('completed');
-    else if (s === step) dot.classList.add('active');
-    else dot.classList.add('inactive');
-  });
-
-  // Update lines
-  document.getElementById('line1').className = step > 1 ? 'step-line filled' : 'step-line';
-  document.getElementById('line2').className = step > 2 ? 'step-line filled' : 'step-line';
-
-  // Update labels
-  for (let i = 1; i <= 3; i++) {
-    document.getElementById('label' + i).className = i === step ? 'step-label-text active' : 'step-label-text';
+  if (step <= 3) {
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+      const s = i + 1;
+      dot.className = 'step-dot';
+      if (s < step) dot.classList.add('completed');
+      else if (s === step) dot.classList.add('active');
+      else dot.classList.add('inactive');
+    });
+    document.getElementById('line1').className = step > 1 ? 'step-line filled' : 'step-line';
+    document.getElementById('line2').className = step > 2 ? 'step-line filled' : 'step-line';
+    for (let i = 1; i <= 3; i++) {
+      document.getElementById('label' + i).className = i === step ? 'step-label-text active' : 'step-label-text';
+    }
   }
 
-  // Scroll to top of wizard
   document.querySelector('.wizard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/* ── Plan Selection ───────────────────────────── */
 function selectPlan(el, name, monthly, enroll) {
   document.querySelectorAll('.plan-option').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
@@ -410,18 +459,105 @@ function selectPlan(el, name, monthly, enroll) {
   }
 }
 
-function submitForm() {
+/* ── Success Panel ────────────────────────────── */
+function showSuccess(icon, title, message) {
+  document.getElementById('successIcon').textContent = icon;
+  document.getElementById('successTitle').textContent = title;
+  document.getElementById('successMessage').textContent = message;
+  document.querySelector('.step-indicator').style.display = 'none';
+  document.querySelector('.step-label').style.display = 'none';
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel4').classList.add('active');
+}
+
+/* ── Form Submission ──────────────────────────── */
+async function submitForm() {
   const a1 = document.getElementById('agree1').checked;
   const a2 = document.getElementById('agree2').checked;
   const a3 = document.getElementById('agree3').checked;
+
   if (!a1 || !a2 || !a3) {
     alert('Please accept all agreements to continue.');
     return;
   }
-  if (selectedPlan.name === 'quickfix') {
-    alert('Thank you! Your Quick Fix request has been submitted. A VIP specialist will review your credit report and contact you within 24 hours with a custom quote.');
-  } else {
-    alert('Thank you! Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours.');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const data = {
+    firstName: document.getElementById('fname').value.trim(),
+    lastName: document.getElementById('lname').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    zip: document.getElementById('zip').value.trim(),
+    plan: selectedPlan.name,
+    hasReferral: document.getElementById('referral').checked,
+    referralCode: referralCode || null,
+  };
+
+  if (!data.firstName || !data.lastName || !data.email || !data.phone) {
+    alert('Please complete all required fields in Step 1.');
+    btn.disabled = false;
+    btn.textContent = 'Submit & Start My Credit Repair →';
+    goToStep(1);
+    return;
+  }
+
+  try {
+    // 1. Submit enrollment data to our API
+    const enrollRes = await fetch('/api/enroll', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const enrollResult = await enrollRes.json();
+
+    if (!enrollRes.ok) {
+      alert(enrollResult.error || 'Submission failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit & Start My Credit Repair →';
+      return;
+    }
+
+    // 2. For paid plans, redirect to Stripe Checkout
+    if (selectedPlan.name !== 'quickfix') {
+      btn.textContent = 'Redirecting to payment...';
+      try {
+        const stripeRes = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            plan: selectedPlan.name,
+            email: data.email,
+            customerName: data.firstName + ' ' + data.lastName,
+          }),
+        });
+        const stripeResult = await stripeRes.json();
+
+        if (stripeRes.ok && stripeResult.url) {
+          window.location.href = stripeResult.url;
+          return;
+        }
+      } catch (stripeErr) {
+        console.log('Stripe not configured yet — showing success directly.');
+      }
+    }
+
+    // 3. Show success (Quick Fix or Stripe not configured)
+    if (selectedPlan.name === 'quickfix') {
+      showSuccess('⚡', 'Quote Request Submitted!',
+        'A VIP specialist will review your credit report and contact you within 24 hours with a custom quote. Get ready to fix your credit fast.');
+    } else {
+      showSuccess('🎉', 'Enrollment Submitted!',
+        'Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours to get your credit restoration started.');
+    }
+  } catch (err) {
+    alert('Network error. Please check your connection and try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit & Start My Credit Repair →';
   }
 }
 </script>

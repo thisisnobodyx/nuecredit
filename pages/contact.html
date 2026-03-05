@@ -114,6 +114,7 @@
       <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="partners.html">Partners</a></li>
+      <li><a href="tools.html">Tools</a></li>
       <li><a href="blog.html">Blog</a></li>
       <li><a href="contact.html" class="active">Contact</a></li>
     </ul>
@@ -130,6 +131,7 @@
   <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
   <a href="about.html">About</a>
   <a href="partners.html">Partners</a>
+  <a href="tools.html">Tools</a>
   <a href="contact.html">Contact</a>
   <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
 </div>
@@ -202,16 +204,16 @@
           </div>
         </div>
       </div>
-      <div class="contact-form reveal reveal-delay-1">
+      <div class="contact-form reveal reveal-delay-1" id="contactForm">
         <div class="form-row">
-          <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John"></div>
-          <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith"></div>
+          <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John" id="cfFirstName"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith" id="cfLastName"></div>
         </div>
-        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="john@example.com"></div>
-        <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000"></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="john@example.com" id="cfEmail"></div>
+        <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000" id="cfPhone"></div>
         <div class="form-group">
           <label class="form-label">Topic</label>
-          <select class="form-select">
+          <select class="form-select" id="cfTopic">
             <option value="">What can we help with?</option>
             <option>I'm interested in credit restoration</option>
             <option>I'm interested in Quick Fix (VIP express service)</option>
@@ -221,9 +223,19 @@
             <option>Other</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us more about how we can help..."></textarea></div>
-        <button class="form-submit">Send Message →</button>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us more about how we can help..." id="cfMessage"></textarea></div>
+        <button class="form-submit" id="cfSubmitBtn" onclick="submitContactForm()">Send Message →</button>
+        <div id="cfError" style="display:none;text-align:center;margin-top:12px;padding:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:8px;color:#dc2626;font-size:13px;"></div>
         <p style="font-size:11px;color:var(--gm);text-align:center;margin-top:14px;">We respect your privacy. No spam, ever.</p>
+      </div>
+      <!-- Success state -->
+      <div id="contactSuccess" style="display:none;" class="contact-form">
+        <div style="text-align:center;padding:48px 24px;">
+          <div style="font-size:48px;margin-bottom:16px;">✅</div>
+          <h3 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--tx);margin-bottom:10px;">Message Sent!</h3>
+          <p style="font-size:15px;color:var(--tl);line-height:1.65;max-width:400px;margin:0 auto 24px;">Thank you for reaching out. Our team will respond within 24 hours on business days.</p>
+          <button class="form-submit" style="max-width:240px;margin:0 auto;" onclick="resetContactForm()">Send Another Message</button>
+        </div>
       </div>
     </div>
   </div>
@@ -291,6 +303,7 @@
           <li><a href="about.html">About Us</a></li>
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -321,5 +334,60 @@
 </footer>
 
 <script src="../js/main.js"></script>
+<script>
+async function submitContactForm() {
+  const btn = document.getElementById('cfSubmitBtn');
+  const errBox = document.getElementById('cfError');
+  errBox.style.display = 'none';
+
+  const data = {
+    firstName: document.getElementById('cfFirstName').value.trim(),
+    lastName: document.getElementById('cfLastName').value.trim(),
+    email: document.getElementById('cfEmail').value.trim(),
+    phone: document.getElementById('cfPhone').value.trim(),
+    topic: document.getElementById('cfTopic').value,
+    message: document.getElementById('cfMessage').value.trim(),
+  };
+
+  if (!data.email || !data.message) {
+    errBox.textContent = 'Please fill in your email and message.';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+
+    if (res.ok && result.success) {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else {
+      errBox.textContent = result.error || 'Something went wrong. Please try again.';
+      errBox.style.display = 'block';
+    }
+  } catch (err) {
+    errBox.textContent = 'Network error. Please check your connection and try again.';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+  }
+}
+
+function resetContactForm() {
+  document.getElementById('contactForm').style.display = 'block';
+  document.getElementById('contactSuccess').style.display = 'none';
+  ['cfFirstName','cfLastName','cfEmail','cfPhone','cfMessage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cfTopic').selectedIndex = 0;
+}
+</script>
 </body>
 </html>
