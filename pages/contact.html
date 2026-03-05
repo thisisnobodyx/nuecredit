@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — nueCredit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="../css/globals.css">
+<style>
+.page-hero { background: var(--bk) url('../images/hero-bg.png') center/cover no-repeat; padding: 140px 0 80px; position: relative; overflow: hidden; }
+.page-hero h1 { font-size: clamp(36px,5vw,60px); font-weight:800; color:#fff; letter-spacing:-2.5px; line-height:1.05; margin-bottom:18px; }
+.page-hero h1 span { color:var(--gb); }
+.page-hero p { font-size:18px; color:rgba(255,255,255,.45); line-height:1.72; max-width:580px; margin:0 auto 36px; }
+.hero-center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.page-hero .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.22); color:var(--gb); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px; margin-bottom:24px; }
+.page-hero .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gb); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+
+/* Hero visual — contact icons */
+.hero-visual { position: relative; min-height: 360px; }
+.hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(0,134,1,.18) 0%, transparent 70%); filter: blur(40px); pointer-events: none; }
+.contact-float {
+  position: absolute; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px; padding: 22px; backdrop-filter: blur(10px);
+  animation: contactFloat 6s ease-in-out infinite;
+}
+.contact-float:nth-child(2) { top: 10%; left: 8%; width: 180px; }
+.contact-float:nth-child(3) { top: 25%; right: 0; width: 190px; animation-delay: -2s; }
+.contact-float:nth-child(4) { bottom: 10%; left: 20%; width: 200px; animation-delay: -4s; }
+@keyframes contactFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.contact-float-icon { font-size: 24px; margin-bottom: 8px; }
+.contact-float-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.contact-float-desc { font-size: 11px; color: rgba(255,255,255,.4); }
+
+/* Contact methods */
+.methods-section { background: var(--bg); }
+.methods-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.method-card {
+  background: var(--wh); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 32px; text-align: center;
+  transition: all .25s;
+}
+.method-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: rgba(0,134,1,.2); }
+.method-icon { font-size: 36px; margin-bottom: 16px; }
+.method-card h3 { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; color: var(--tx); margin-bottom: 8px; }
+.method-card p { font-size: 14px; color: var(--tl); line-height: 1.65; margin-bottom: 16px; }
+.method-link { font-size: 14px; font-weight: 600; color: var(--g); }
+.method-link:hover { color: var(--gb); }
+
+/* Contact form */
+.form-section { background: var(--wh); }
+.contact-form-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+.form-info h3 { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; color: var(--tx); letter-spacing: -1px; margin-bottom: 14px; }
+.form-info p { font-size: 15px; color: var(--tl); line-height: 1.72; margin-bottom: 28px; }
+.info-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+.info-icon { width: 42px; height: 42px; border-radius: 12px; background: var(--gl); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.info-label { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--tx); margin-bottom: 2px; }
+.info-val { font-size: 14px; color: var(--tl); }
+.contact-form { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 36px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--tx); }
+.form-input { padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx); transition: border-color .2s; outline: none; background: var(--wh); }
+.form-input:focus { border-color: var(--g); }
+.form-select { padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx); background: var(--wh); outline: none; cursor: pointer; }
+.form-select:focus { border-color: var(--g); }
+.form-textarea { padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx); transition: border-color .2s; outline: none; background: var(--wh); resize: vertical; min-height: 120px; }
+.form-textarea:focus { border-color: var(--g); }
+.form-submit { width: 100%; padding: 14px; background: var(--g); color: #fff; border: none; border-radius: 10px; font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.form-submit:hover { background: var(--gb); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,134,1,.3); }
+
+/* FAQ */
+.faq-section { background: var(--bg); }
+.faq-grid { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.faq-item { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: all .2s; background: var(--wh); }
+.faq-item:hover { border-color: rgba(0,134,1,.2); }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; cursor: pointer; gap: 16px;
+  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--tx); background: var(--wh);
+}
+.faq-q:hover { background: var(--bg); }
+.faq-icon {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+  background: var(--bg); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--g); transition: transform .3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a-inner { padding: 0 22px 18px; font-size: 14px; color: var(--tl); line-height: 1.72; }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .contact-form-wrap { grid-template-columns: 1fr; }
+  .methods-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .methods-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+      <a href="get-started.html" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="how-it-works.html">How It Works</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="about.html">About</a>
+  <a href="partners.html">Partners</a>
+  <a href="blog.html">Blog</a>
+  <a href="contact.html">Contact</a>
+  <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-center">
+      <div class="hero-badge"><div class="hero-badge-dot"></div>We're Here to Help</div>
+      <h1>Get In <span>Touch.</span></h1>
+      <p>Have questions about our credit restoration services? Our team is ready to help you take the first step toward better credit.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+        <a href="#contact-form" class="btn btn-primary btn-lg">Send a Message</a>
+        <a href="#faq" class="btn btn-ghost btn-lg">View FAQ</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm methods-section">
+  <div class="container">
+    <div class="methods-grid">
+      <div class="method-card reveal">
+        <div class="method-icon">📧</div>
+        <h3>Email Us</h3>
+        <p>Send us an email anytime. We respond within 24 hours on business days.</p>
+        <a href="mailto:support@nuecredit.com" class="method-link">support@nuecredit.com</a>
+      </div>
+      <div class="method-card reveal reveal-delay-1">
+        <div class="method-icon">📞</div>
+        <h3>Call Us</h3>
+        <p>Speak directly with a credit specialist. Available Monday through Friday.</p>
+        <a href="tel:+18005550199" class="method-link">(800) 555-0199</a>
+      </div>
+      <div class="method-card reveal reveal-delay-2">
+        <div class="method-icon">💬</div>
+        <h3>Live Chat</h3>
+        <p>Get instant answers through our live chat. Available during business hours.</p>
+        <span class="method-link">Mon–Fri, 9am–6pm EST</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section form-section" id="contact-form">
+  <div class="container">
+    <div class="contact-form-wrap">
+      <div class="form-info reveal">
+        <div class="eyebrow">Send a Message</div>
+        <h3>We'd Love to Hear From You</h3>
+        <p>Whether you're a prospective client, a current member with questions, or a professional interested in partnering — we're here to help.</p>
+        <div class="info-item">
+          <div class="info-icon">🏢</div>
+          <div>
+            <div class="info-label">Office</div>
+            <div class="info-val">Miami, FL — United States</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">⏰</div>
+          <div>
+            <div class="info-label">Business Hours</div>
+            <div class="info-val">Mon–Fri: 9:00 AM – 6:00 PM EST</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">⚡</div>
+          <div>
+            <div class="info-label">Response Time</div>
+            <div class="info-val">Within 24 hours on business days</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-delay-1">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John"></div>
+          <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="john@example.com"></div>
+        <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000"></div>
+        <div class="form-group">
+          <label class="form-label">Topic</label>
+          <select class="form-select">
+            <option value="">What can we help with?</option>
+            <option>I'm interested in credit restoration</option>
+            <option>I'm a current client with a question</option>
+            <option>I'm interested in the Partner Program</option>
+            <option>Billing or account inquiry</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us more about how we can help..."></textarea></div>
+        <button class="form-submit">Send Message →</button>
+        <p style="font-size:11px;color:var(--gm);text-align:center;margin-top:14px;">We respect your privacy. No spam, ever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow">FAQ</div>
+      <h2>Common Questions</h2>
+      <p>Quick answers to the questions we hear most often.</p>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How quickly will I hear back?<div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">We respond to all inquiries within 24 hours on business days. For urgent matters, calling us directly is the fastest way to get help.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is my information secure?<div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Absolutely. All data submitted through our forms is encrypted and handled in compliance with federal regulations. We never sell or share your personal information.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I check on my case status?<div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes! Current clients can log into their portal to track progress in real time, or call us directly for a status update from your assigned specialist.</div></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Do you offer free consultations?<div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes, we offer a free credit audit for all new clients. This gives you a clear picture of where you stand and what we can do to help improve your score.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I become a partner?<div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Visit our <a href="partners.html" style="color:var(--g);font-weight:600;">Partner Program page</a> to learn about commission structures and apply. Most partners are approved within 24 hours.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-banner">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="eyebrow light" style="justify-content:center;">Ready to Start?</div>
+      <h2>Take the First Step<br>Toward Better Credit</h2>
+      <p>Join thousands of Americans who've rebuilt their credit with nueCredit.</p>
+      <a href="get-started.html" class="btn btn-white btn-lg">Get Started Today</a>
+      <div class="cta-trust">
+        <div class="cta-trust-item">🔒 Secure & Private</div>
+        <div class="cta-trust-item">✓ CROA Compliant</div>
+        <div class="cta-trust-item">✓ Cancel Anytime</div>
+        <div class="cta-trust-item">✓ US-Based Team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="#">Basic Plan</a></li>
+          <li><a href="#">Pro Plan</a></li>
+          <li><a href="#">Premium Plan</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="partners.html">Partner Program</a></li>
+          <li><a href="#">Partner Login</a></li>
+          <li><a href="partners.html#apply">Apply Now</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">CROA Disclosure</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
