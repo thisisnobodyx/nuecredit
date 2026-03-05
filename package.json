@@ -1,0 +1,16 @@
+{
+  "name": "nuecredit",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.16",
+    "stripe": "^14.25.0"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "serve": "npx serve -l 3000 ."
+  }
+}

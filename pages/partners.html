@@ -92,6 +92,7 @@
       <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="partners.html" class="active">Partners</a></li>
+      <li><a href="tools.html">Tools</a></li>
       <li><a href="blog.html">Blog</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
@@ -108,6 +109,7 @@
   <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
   <a href="about.html">About</a>
   <a href="partners.html">Partners</a>
+  <a href="tools.html">Tools</a>
   <a href="contact.html">Contact</a>
   <a href="#apply" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Apply Now</a>
 </div>
@@ -275,16 +277,16 @@
       <h2>Join the Partner Program</h2>
       <p>Takes 3 minutes. Approved within 24 hours. Zero cost to join.</p>
     </div>
-    <div class="partner-form reveal">
+    <div class="partner-form reveal" id="partnerForm">
       <div class="form-row">
-        <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John"></div>
-        <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith"></div>
+        <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John" id="pfFirstName"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith" id="pfLastName"></div>
       </div>
-      <div class="form-group"><label class="form-label">Business Email</label><input type="email" class="form-input" placeholder="john@yourbusiness.com"></div>
-      <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000"></div>
+      <div class="form-group"><label class="form-label">Business Email</label><input type="email" class="form-input" placeholder="john@yourbusiness.com" id="pfEmail"></div>
+      <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000" id="pfPhone"></div>
       <div class="form-group">
         <label class="form-label">Industry / Role</label>
-        <select class="form-select">
+        <select class="form-select" id="pfRole">
           <option value="">Select your role...</option>
           <option>Mortgage Broker</option>
           <option>Auto Dealer / Finance Manager</option>
@@ -294,9 +296,19 @@
           <option>Other</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">How many clients do you work with monthly?</label><input type="text" class="form-input" placeholder="e.g. 20–50"></div>
-      <button class="form-submit">Submit Application →</button>
+      <div class="form-group"><label class="form-label">How many clients do you work with monthly?</label><input type="text" class="form-input" placeholder="e.g. 20–50" id="pfClients"></div>
+      <button class="form-submit" id="pfSubmitBtn" onclick="submitPartnerForm()">Submit Application →</button>
+      <div id="pfError" style="display:none;text-align:center;margin-top:12px;padding:10px;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:8px;color:#dc2626;font-size:13px;"></div>
       <p style="font-size:11px;color:var(--gm);text-align:center;margin-top:14px;">By submitting you agree to our Partner Terms. No spam, ever.</p>
+    </div>
+    <!-- Success state -->
+    <div id="partnerSuccess" style="display:none;" class="partner-form">
+      <div style="text-align:center;padding:48px 24px;">
+        <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+        <h3 style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--tx);margin-bottom:10px;">Application Submitted!</h3>
+        <p style="font-size:15px;color:var(--tl);line-height:1.65;max-width:420px;margin:0 auto 16px;">Thank you for applying to the nueCredit Partner Program. Our team will review your application and contact you within 48 hours.</p>
+        <p style="font-size:13px;color:var(--gm);">Once approved, you'll receive your unique referral link and partner portal access.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -325,6 +337,7 @@
           <li><a href="about.html">About Us</a></li>
           <li><a href="how-it-works.html">How It Works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
@@ -355,5 +368,54 @@
 </footer>
 
 <script src="../js/main.js"></script>
+<script>
+async function submitPartnerForm() {
+  const btn = document.getElementById('pfSubmitBtn');
+  const errBox = document.getElementById('pfError');
+  errBox.style.display = 'none';
+
+  const data = {
+    firstName: document.getElementById('pfFirstName').value.trim(),
+    lastName: document.getElementById('pfLastName').value.trim(),
+    email: document.getElementById('pfEmail').value.trim(),
+    phone: document.getElementById('pfPhone').value.trim(),
+    role: document.getElementById('pfRole').value,
+    monthlyClients: document.getElementById('pfClients').value.trim(),
+  };
+
+  if (!data.firstName || !data.lastName || !data.email || !data.phone) {
+    errBox.textContent = 'Please fill in all required fields (name, email, phone).';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  try {
+    const res = await fetch('/api/partner-apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+
+    if (res.ok && result.success) {
+      document.getElementById('partnerForm').style.display = 'none';
+      document.getElementById('partnerSuccess').style.display = 'block';
+      document.getElementById('partnerSuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      errBox.textContent = result.error || 'Something went wrong. Please try again.';
+      errBox.style.display = 'block';
+    }
+  } catch (err) {
+    errBox.textContent = 'Network error. Please check your connection and try again.';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Application →';
+  }
+}
+</script>
 </body>
 </html>
