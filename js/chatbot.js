@@ -364,8 +364,9 @@
 
   /* ── Quick Action Buttons ─────────────────── */
   quickEl.addEventListener('click', function (e) {
+    e.stopPropagation();
     var btn = e.target.closest('button[data-q]');
-    if (btn) sendMessage(btn.getAttribute('data-q'));
+    if (btn && isOpen) sendMessage(btn.getAttribute('data-q'));
   });
 
   /* ── Send Message ─────────────────────────── */
@@ -408,7 +409,11 @@
       })
       .catch(function () {
         typing.remove();
-        appendMessage('bot', "I'm having trouble connecting right now. Please try again in a moment, or visit our <a href='/pages/contact.html' style='color:#008601;'>contact page</a> for help.");
+        var errorDiv = document.createElement('div');
+        errorDiv.className = 'nue-msg bot';
+        errorDiv.innerHTML = "I'm having trouble connecting right now. Please try again in a moment, or visit our <a href='/pages/contact.html' style='color:#008601;text-decoration:underline;'>contact page</a> for help.";
+        messagesEl.appendChild(errorDiv);
+        scrollToBottom();
         isSending = false;
         sendBtn.disabled = false;
       });
