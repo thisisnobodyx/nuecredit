@@ -937,12 +937,16 @@
         }
 
         try {
-          // POST analysis request
+          // POST analysis request (include client name for personalization)
+          var firstName = document.getElementById('firstName').value.trim();
+          var lastName = document.getElementById('lastName').value.trim();
           var payload = {
             images: uploadedImages,
             reportText: extractedText,
             notes: notesInput.value.trim(),
-            fileName: uploadedFile ? uploadedFile.name : ''
+            fileName: uploadedFile ? uploadedFile.name : '',
+            firstName: firstName,
+            lastName: lastName
           };
 
           var resp = await fetch('/api/ai/report-analyzer', {
@@ -997,10 +1001,16 @@
           document.getElementById('negativeSection').style.display = '';
           negList.forEach(function(item) {
             var severityClass = (item.severity || 'medium').toLowerCase();
+            var balance = item.balance && item.balance !== 'N/A' ? item.balance : '';
+            var dateRep = item.dateReported && item.dateReported !== 'N/A' ? item.dateReported : '';
+            var details = [];
+            if (balance) details.push(balance);
+            if (dateRep) details.push(dateRep);
+            var detailStr = details.length > 0 ? ' <span style="color:var(--gm);font-size:11px;">(' + escapeHtml(details.join(' · ')) + ')</span>' : '';
             var div = document.createElement('div');
             div.className = 'neg-item';
             div.innerHTML =
-              '<span class="neg-name">' + escapeHtml(item.name || item.account || 'Unknown') + '</span>' +
+              '<span class="neg-name">' + escapeHtml(item.name || item.account || 'Unknown') + detailStr + '</span>' +
               '<span class="neg-type">' + escapeHtml(item.type || '') + '</span>' +
               '<span class="severity ' + severityClass + '">' + severityClass + '</span>';
             negativeItems.appendChild(div);
@@ -1015,12 +1025,14 @@
           document.getElementById('disputeSection').style.display = 'none';
         } else {
           document.getElementById('disputeSection').style.display = '';
-          disputes.forEach(function(item) {
+          disputes.forEach(function(d) {
             var li = document.createElement('li');
-            var likelihood = (item.likelihood || 'medium').toLowerCase();
+            var likelihood = (d.likelihood || 'medium').toLowerCase();
+            var displayText = typeof d === 'string' ? d : (d.item || d.description || d.text || '');
+            var reasonText = d.reason ? ' — ' + d.reason : '';
             li.innerHTML =
               '<span class="bullet"></span>' +
-              '<span style="flex:1;">' + escapeHtml(typeof item === 'string' ? item : (item.description || item.text || '')) + '</span>' +
+              '<span style="flex:1;"><strong>' + escapeHtml(displayText) + '</strong>' + escapeHtml(reasonText) + '</span>' +
               '<span class="likelihood ' + likelihood + '">' + likelihood + '</span>';
             disputeList.appendChild(li);
           });
@@ -1051,12 +1063,15 @@
           document.getElementById('timelineSection').style.display = 'none';
         } else {
           document.getElementById('timelineSection').style.display = '';
-          timeline.forEach(function(step) {
+          timeline.forEach(function(s) {
             var div = document.createElement('div');
             div.className = 'action-step';
+            var timeStr = s.timeline || s.timeframe || s.time || '';
+            var stepStr = s.step || s.action || s.description || s.text || '';
+            var impactStr = s.impact ? ' — ' + s.impact : '';
             div.innerHTML =
-              '<div class="action-step-time">' + escapeHtml(step.timeframe || step.time || '') + '</div>' +
-              '<div class="action-step-text">' + escapeHtml(step.action || step.description || step.text || '') + '</div>';
+              '<div class="action-step-time">' + escapeHtml(timeStr) + '</div>' +
+              '<div class="action-step-text">' + escapeHtml(stepStr) + escapeHtml(impactStr) + '</div>';
             actionTimeline.appendChild(div);
           });
         }

@@ -7,7 +7,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { currentScore, action, amount, details } = req.body;
+    const { currentScore, action, amount, details, firstName, lastName } = req.body;
+    const clientName = [firstName, lastName].filter(Boolean).join(' ');
 
     if (!currentScore || !action) {
       return res.status(400).json({ error: 'Current score and action type are required.' });
@@ -34,7 +35,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) with these f
 - recommendations: string[] (2-3 actionable tips)
 - disclaimer: string (must include "This analysis was prepared by nueCredit's AI tools and is for informational purposes only.")`;
 
-    const userPrompt = `Current credit score: ${score}
+    const userPrompt = `${clientName ? `Client: ${clientName}\n` : ''}Current credit score: ${score}
 Action being considered: ${action}
 ${amount ? `Amount involved: $${amount}` : ''}
 ${details ? `Additional details: ${details}` : ''}

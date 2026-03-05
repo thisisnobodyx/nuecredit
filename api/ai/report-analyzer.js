@@ -13,7 +13,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { reportText, images, notes, fileName, accounts } = req.body;
+    const { reportText, images, notes, fileName, accounts, firstName, lastName } = req.body;
+    const clientName = [firstName, lastName].filter(Boolean).join(' ');
 
     const hasImages = images && Array.isArray(images) && images.length > 0;
     const hasText = reportText && reportText.trim().length > 0;
@@ -25,7 +26,10 @@ export default async function handler(req, res) {
     const systemPrompt = `You are nueCredit's AI credit report analyst. You help consumers understand their credit report and identify opportunities for improvement.
 
 Your analysis must:
-- Identify negative items (late payments, collections, charge-offs, inquiries, public records)
+- Extract SPECIFIC account details from the report — use actual creditor names (e.g. "Capital One Visa ending 4521"), real balances, real dates, and real account numbers visible in the report
+- Do NOT use generic category names like "Recent Collections" — always use the actual creditor/company name from the report
+- Identify negative items (late payments, collections, charge-offs, inquiries, public records) with the specific creditor name and account details
+- Include the balance/amount owed for each negative item when visible
 - Categorize items by severity and disputability
 - Suggest which items are most likely to be successfully disputed
 - Prioritize quick wins that could have the biggest score impact
@@ -35,13 +39,13 @@ Your analysis must:
 - Remind users this is informational analysis only
 
 You MUST respond with ONLY valid JSON (no markdown, no code fences) with these fields:
-- summary: string (2-3 sentence overview of the credit report)
+- summary: string (2-3 sentence overview including score range if visible, number of accounts, and main issues)
 - score_assessment: string (general assessment of where they stand)
 - stats: { negativeItems: number, disputeOpportunities: number, quickWins: number, totalAccounts: number }
-- negativeItems: array of { name: string, type: string, severity: "high"|"medium"|"low", disputable: boolean, explanation: string }
-- disputeOpportunities: array of { item: string, likelihood: "high"|"medium"|"low", reason: string }
-- quickWins: string[] (3-5 immediate actions that could help)
-- actionPlan: array of { step: string, timeline: string, impact: string }
+- negativeItems: array of { name: string (MUST be the actual creditor/account name from the report, e.g. "Capital One - Visa ending 4521"), type: string (e.g. "collections", "late_payment", "charge_off", "inquiry", "public_record"), balance: string (the amount owed if visible, e.g. "$2,340" or "N/A"), dateReported: string (date if visible, e.g. "Mar 2024" or "N/A"), severity: "high"|"medium"|"low", disputable: boolean, explanation: string (specific reason why this item is negative and what can be done) }
+- disputeOpportunities: array of { item: string (specific account name), reason: string (why it's disputable), likelihood: "high"|"medium"|"low" }
+- quickWins: string[] (3-5 immediate actions referencing SPECIFIC accounts from the report)
+- actionPlan: array of { step: string (specific action to take), timeline: string (e.g. "Week 1-2", "Month 1", "Month 2-3"), impact: string (expected result) }
 - estimatedTimeline: string (how long overall improvement might take)
 - disclaimer: string (must include "This analysis was prepared by nueCredit's AI tools and is for informational purposes only. For professional credit restoration, visit nuecredit.com.")`;
 
@@ -50,7 +54,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) with these f
 
     if (hasImages) {
       /* Add text instruction first */
-      let textInstruction = 'Analyze this credit report and provide a comprehensive assessment. Identify all negative items, dispute opportunities, and create a prioritized action plan.';
+      let textInstruction = `${clientName ? `This credit report belongs to ${clientName}. ` : ''}Analyze this credit report and provide a comprehensive assessment. Extract SPECIFIC account names, creditor names, balances, and dates from the report. Identify all negative items with their actual account details, dispute opportunities, and create a prioritized action plan.`;
       if (hasText) {
         textInstruction += `\n\nExtracted text from the report:\n${reportText.substring(0, 6000)}`;
       }
@@ -79,7 +83,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) with these f
     } else {
       /* Text-only mode (HTML extraction or legacy) */
       const input = reportText || JSON.stringify(accounts);
-      let textPrompt = `Analyze this credit report information and provide a comprehensive assessment:\n\n${input.substring(0, 8000)}`;
+      let textPrompt = `${clientName ? `This credit report belongs to ${clientName}. ` : ''}Analyze this credit report information and provide a comprehensive assessment. Extract SPECIFIC account names, creditor names, balances, and dates:\n\n${input.substring(0, 8000)}`;
       if (notes) {
         textPrompt += `\n\nUser notes: ${notes}`;
       }
