@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(503).json({ error: 'AI service is not configured yet. Please try again later.' });
   }
 
@@ -34,7 +34,7 @@ Your analysis must:
 - Always recommend professional credit restoration for complex cases
 - Remind users this is informational analysis only
 
-Respond in JSON format with:
+You MUST respond with ONLY valid JSON (no markdown, no code fences) with these fields:
 - summary: string (2-3 sentence overview of the credit report)
 - score_assessment: string (general assessment of where they stand)
 - stats: { negativeItems: number, disputeOpportunities: number, quickWins: number, totalAccounts: number }
@@ -45,10 +45,9 @@ Respond in JSON format with:
 - estimatedTimeline: string (how long overall improvement might take)
 - disclaimer: string`;
 
-    /* ── Build the messages array ───────────────────────────── */
+    /* ── Build the user message content array ───────────────── */
     const userContent = [];
 
-    /* If we have images (from PDF pages or direct image upload), use vision */
     if (hasImages) {
       /* Add text instruction first */
       let textInstruction = 'Analyze this credit report and provide a comprehensive assessment. Identify all negative items, dispute opportunities, and create a prioritized action plan.';
@@ -60,19 +59,25 @@ Respond in JSON format with:
       }
       userContent.push({ type: 'text', text: textInstruction });
 
-      /* Add images (cap at 5 pages to stay within token limits) */
+      /* Add images — Claude uses base64 source format */
       const maxImages = Math.min(images.length, 5);
       for (let i = 0; i < maxImages; i++) {
-        userContent.push({
-          type: 'image_url',
-          image_url: {
-            url: images[i],
-            detail: 'high',
-          },
-        });
+        const dataUrl = images[i];
+        /* Parse data URL: "data:image/jpeg;base64,/9j/4AAQ..." */
+        const match = dataUrl.match(/^data:(image\/\w+);base64,(.+)$/);
+        if (match) {
+          userContent.push({
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: match[1],  /* e.g. "image/jpeg" */
+              data: match[2],        /* raw base64 string */
+            },
+          });
+        }
       }
     } else {
-      /* Text-only mode (HTML extraction or legacy text paste) */
+      /* Text-only mode (HTML extraction or legacy) */
       const input = reportText || JSON.stringify(accounts);
       let textPrompt = `Analyze this credit report information and provide a comprehensive assessment:\n\n${input.substring(0, 8000)}`;
       if (notes) {
@@ -82,35 +87,33 @@ Respond in JSON format with:
       userContent.push({ type: 'text', text: textPrompt });
     }
 
-    /* Use gpt-4o for vision (images), gpt-4o-mini for text-only */
-    const model = hasImages ? 'gpt-4o' : 'gpt-4o-mini';
-
-    const aiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    /* Use claude-sonnet-4-20250514 for everything (supports vision natively) */
+    const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model,
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: systemPrompt,
         messages: [
-          { role: 'system', content: systemPrompt },
           { role: 'user', content: userContent },
         ],
-        temperature: 0.6,
-        max_tokens: 3000,
-        response_format: { type: 'json_object' },
       }),
     });
 
     if (!aiRes.ok) {
       const err = await aiRes.text();
-      console.error('[AI] OpenAI error:', err);
+      console.error('[AI] Claude error:', err);
       return res.status(502).json({ error: 'AI service temporarily unavailable.' });
     }
 
     const aiData = await aiRes.json();
-    const result = JSON.parse(aiData.choices[0].message.content);
+    const rawText = aiData.content[0].text;
+    const result = JSON.parse(rawText);
 
     return res.status(200).json({
       success: true,

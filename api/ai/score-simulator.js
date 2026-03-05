@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  if (!process.env.OPENAI_API_KEY) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(503).json({ error: 'AI service is not configured yet. Please try again later.' });
   }
 
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 - Never provide specific financial or legal advice
 - Always note that individual results vary based on full credit profile
 
-Respond in JSON format with these fields:
+You MUST respond with ONLY valid JSON (no markdown, no code fences) with these fields:
 - estimatedRange: { low: number, high: number }
 - impact: "positive" | "negative" | "neutral"
 - explanation: string (2-3 sentences explaining the impact)
@@ -41,32 +41,32 @@ ${details ? `Additional details: ${details}` : ''}
 
 Simulate the likely impact on this person's credit score.`;
 
-    const aiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
         messages: [
-          { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
-        temperature: 0.7,
-        max_tokens: 800,
-        response_format: { type: 'json_object' },
       }),
     });
 
     if (!aiRes.ok) {
       const err = await aiRes.text();
-      console.error('[AI] OpenAI error:', err);
+      console.error('[AI] Claude error:', err);
       return res.status(502).json({ error: 'AI service temporarily unavailable.' });
     }
 
     const aiData = await aiRes.json();
-    const result = JSON.parse(aiData.choices[0].message.content);
+    const rawText = aiData.content[0].text;
+    const result = JSON.parse(rawText);
 
     return res.status(200).json({
       success: true,
