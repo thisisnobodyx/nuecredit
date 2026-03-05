@@ -763,11 +763,15 @@
         })
       });
 
-      // POST tool data for AI analysis
+      // POST tool data for AI analysis (include client name for personalization)
       const response = await fetch('/api/ai/score-simulator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(toolData)
+        body: JSON.stringify({
+          ...toolData,
+          firstName,
+          lastName
+        })
       });
 
       if (!response.ok) {

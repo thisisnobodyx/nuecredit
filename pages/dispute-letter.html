@@ -829,13 +829,45 @@
       var loading = document.getElementById('loadingState');
       loading.classList.remove('active');
 
+      // Check for error response
+      if (data.error && !data.letter) {
+        var btn = document.getElementById('submitInfoBtn');
+        btn.disabled = false;
+        btn.innerHTML = 'Get My Letter &rarr;';
+        document.getElementById('step2').classList.add('active', 'slide-in');
+        alert(data.error);
+        return;
+      }
+
       // Bureau info
-      var bureau = toolData.creditBureau;
-      var addr = bureauAddresses[bureau] || bureau;
+      var bureau = data.bureau || toolData.creditBureau;
+      var addr = data.bureauAddress || bureauAddresses[bureau] || bureau;
       document.getElementById('bureauInfo').innerHTML = '<strong>To:</strong> ' + bureau + ' &mdash; ' + addr;
 
       // Letter text
       document.getElementById('letterText').textContent = data.letter || data.content || 'Letter could not be generated. Please try again.';
+
+      // Dynamic filing instructions from AI
+      if (data.filingInstructions && data.filingInstructions.length > 0) {
+        var filingOl = document.querySelector('.filing-tips ol');
+        filingOl.innerHTML = '';
+        data.filingInstructions.forEach(function(inst) {
+          var li = document.createElement('li');
+          li.textContent = inst;
+          filingOl.appendChild(li);
+        });
+      }
+
+      // Dynamic tips from AI
+      if (data.tips && data.tips.length > 0) {
+        var tipsUl = document.querySelector('.tips-section ul');
+        tipsUl.innerHTML = '';
+        data.tips.forEach(function(tip) {
+          var li = document.createElement('li');
+          li.textContent = tip;
+          tipsUl.appendChild(li);
+        });
+      }
 
       // Show step 3
       var step3 = document.getElementById('step3');
