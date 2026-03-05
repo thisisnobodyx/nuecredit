@@ -7,103 +7,111 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="../css/globals.css">
 <style>
-.page-hero { background: var(--bk) url('../images/hero-bg.png') center/cover no-repeat; padding: 140px 0 80px; position: relative; overflow: hidden; }
-.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.page-hero h1 { font-size: clamp(36px,5vw,60px); font-weight:800; color:#fff; letter-spacing:-2.5px; line-height:1.05; margin-bottom:18px; }
+.page-hero { background: var(--bk) url('../images/hero-bg.png') center/cover no-repeat; padding: 120px 0 40px; position: relative; overflow: hidden; }
+.hero-center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.page-hero h1 { font-size: clamp(28px,4vw,44px); font-weight:800; color:#fff; letter-spacing:-2px; line-height:1.1; margin-bottom:12px; }
 .page-hero h1 span { color:var(--gb); }
-.page-hero p { font-size:18px; color:rgba(255,255,255,.45); line-height:1.72; max-width:520px; margin-bottom:36px; }
-.page-hero .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,134,1,.1); border:1px solid rgba(0,134,1,.22); color:var(--gb); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px; margin-bottom:24px; }
-.page-hero .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gb); animation:pulse 2s infinite; }
-@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+.page-hero p { font-size:16px; color:rgba(255,255,255,.45); line-height:1.72; max-width:520px; margin:0 auto 0; }
 
-/* Hero visual — progress cards */
-.hero-visual { position: relative; min-height: 360px; }
-.hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(0,134,1,.18) 0%, transparent 70%); filter: blur(40px); pointer-events: none; }
-.progress-float {
-  position: absolute; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px; padding: 20px; backdrop-filter: blur(10px);
-  animation: progressFloat 6s ease-in-out infinite;
-}
-.progress-float:nth-child(2) { top: 5%; left: 5%; width: 210px; }
-.progress-float:nth-child(3) { top: 35%; right: 0; width: 190px; animation-delay: -2s; }
-.progress-float:nth-child(4) { bottom: 5%; left: 15%; width: 200px; animation-delay: -4s; }
-@keyframes progressFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.progress-float-step { display: flex; align-items: center; gap: 12px; }
-.progress-float-num { width: 32px; height: 32px; border-radius: 10px; background: var(--g); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; }
-.progress-float-text { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
-.progress-float-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
+/* Wizard */
+.wizard-section { background: var(--bg); padding: 0 0 80px; }
+.wizard-wrap { max-width: 760px; margin: 0 auto; position: relative; top: -40px; }
 
-/* Steps */
-.steps-section { background: var(--bg); }
-.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.step-card {
-  background: var(--wh); border: 1px solid var(--border);
-  border-radius: var(--r-lg); padding: 32px; text-align: center;
-  transition: all .25s; position: relative;
-}
-.step-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: rgba(0,134,1,.2); }
-.step-num { font-family: 'Sora', sans-serif; font-size: 48px; font-weight: 800; color: var(--g); line-height: 1; margin-bottom: 16px; }
-.step-card h3 { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; color: var(--tx); margin-bottom: 10px; }
-.step-card p { font-size: 14px; color: var(--tl); line-height: 1.65; }
-.step-time { display: inline-block; margin-top: 14px; background: var(--gl); color: var(--g); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 100px; }
+/* Step indicator */
+.step-indicator { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 36px; padding: 28px 40px; background: var(--wh); border-radius: var(--r-lg); box-shadow: var(--shadow); border: 1px solid var(--border); }
+.step-dot { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 800; flex-shrink: 0; transition: all .4s; cursor: pointer; }
+.step-dot.active { background: var(--g); color: #fff; box-shadow: 0 0 0 5px rgba(0,134,1,.15); }
+.step-dot.completed { background: var(--g); color: #fff; }
+.step-dot.inactive { background: var(--bg); color: var(--gm); border: 2px solid var(--border); }
+.step-line { flex: 1; height: 3px; background: var(--border); margin: 0 -1px; transition: background .4s; position: relative; z-index: 0; }
+.step-line.filled { background: var(--g); }
+.step-label { display: flex; justify-content: space-between; padding: 0 20px; margin-top: -20px; margin-bottom: 36px; }
+.step-label-item { text-align: center; width: 140px; }
+.step-label-text { font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 700; color: var(--gm); transition: color .3s; }
+.step-label-text.active { color: var(--g); }
 
-/* What you need */
-.need-section { background: var(--bk); }
-.need-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.need-card {
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
-  border-radius: var(--r-lg); padding: 28px; display: flex; gap: 18px; align-items: flex-start;
-  transition: all .25s;
-}
-.need-card:hover { background: rgba(255,255,255,.06); border-color: rgba(0,134,1,.25); }
-.need-icon { font-size: 28px; flex-shrink: 0; }
-.need-card h4 { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-.need-card p { font-size: 13px; color: rgba(255,255,255,.42); line-height: 1.65; }
+/* Step panels */
+.step-panel { display: none; animation: fadeIn .3s ease; }
+.step-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-/* Trust */
-.trust-section { background: var(--bg); }
-.trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.trust-card {
-  background: var(--wh); border: 1px solid var(--border);
-  border-radius: var(--r-lg); padding: 24px; text-align: center;
-  transition: all .25s;
-}
-.trust-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
-.trust-icon { font-size: 32px; margin-bottom: 12px; }
-.trust-card h4 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--tx); margin-bottom: 6px; }
-.trust-card p { font-size: 12px; color: var(--tl); line-height: 1.6; }
+/* Form card */
+.form-card { background: var(--wh); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 36px; }
+.form-card-title { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--tx); letter-spacing: -.5px; margin-bottom: 6px; }
+.form-card-sub { font-size: 14px; color: var(--tl); margin-bottom: 28px; line-height: 1.6; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.form-label { font-size: 13px; font-weight: 600; color: var(--tx); }
+.form-input { padding: 13px 16px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx); transition: all .2s; outline: none; background: var(--wh); }
+.form-input:focus { border-color: var(--g); box-shadow: 0 0 0 3px rgba(0,134,1,.08); }
+.form-select { padding: 13px 16px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--tx); background: var(--wh); outline: none; cursor: pointer; transition: all .2s; }
+.form-select:focus { border-color: var(--g); box-shadow: 0 0 0 3px rgba(0,134,1,.08); }
+.form-divider { height: 1px; background: var(--border); margin: 8px 0 24px; }
 
-/* FAQ */
-.faq-section { background: var(--wh); }
-.faq-grid { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-.faq-item { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; transition: all .2s; }
-.faq-item:hover { border-color: rgba(0,134,1,.2); }
-.faq-q {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 18px 22px; cursor: pointer; gap: 16px;
-  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700;
-  color: var(--tx); background: var(--wh);
-}
-.faq-q:hover { background: var(--bg); }
-.faq-icon {
-  flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
-  background: var(--bg); display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: var(--g); transition: transform .3s;
-}
-.faq-item.open .faq-icon { transform: rotate(45deg); }
-.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
-.faq-item.open .faq-a { max-height: 300px; }
-.faq-a-inner { padding: 0 22px 18px; font-size: 14px; color: var(--tl); line-height: 1.72; }
+/* Referral checkbox */
+.referral-box { display: flex; align-items: flex-start; gap: 14px; padding: 20px; background: var(--gl); border: 1px solid rgba(0,134,1,.15); border-radius: 12px; margin-bottom: 24px; }
+.referral-box input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--g); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+.referral-text { font-size: 14px; color: var(--tx); line-height: 1.55; font-weight: 500; }
 
-@media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-visual { display: none; }
-  .need-grid { grid-template-columns: 1fr; }
-  .trust-grid { grid-template-columns: 1fr 1fr; }
+/* Plan selection (Step 2) */
+.plan-options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+.plan-option {
+  display: flex; align-items: center; gap: 18px;
+  padding: 20px 24px; border: 2px solid var(--border);
+  border-radius: 14px; cursor: pointer; transition: all .2s;
+  position: relative;
 }
+.plan-option:hover { border-color: rgba(0,134,1,.3); background: rgba(0,134,1,.02); }
+.plan-option.selected { border-color: var(--g); background: rgba(0,134,1,.04); }
+.plan-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .2s; }
+.plan-option.selected .plan-radio { border-color: var(--g); background: var(--g); }
+.plan-option.selected .plan-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.plan-details { flex: 1; }
+.plan-name { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--tx); }
+.plan-desc { font-size: 13px; color: var(--tl); margin-top: 2px; }
+.plan-price-tag { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; color: var(--g); letter-spacing: -1px; flex-shrink: 0; }
+.plan-price-per { font-size: 13px; color: var(--gm); font-weight: 400; }
+.plan-popular { position: absolute; top: -10px; right: 16px; background: var(--g); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: .5px; }
+
+/* Order summary */
+.order-summary { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+.order-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px; }
+.order-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 14px; font-family: 'Sora', sans-serif; font-weight: 700; color: var(--tx); font-size: 16px; }
+.order-label { color: var(--tl); }
+.order-val { font-weight: 600; color: var(--tx); }
+
+/* Legal (Step 3) */
+.legal-block { padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 18px; max-height: 240px; overflow-y: auto; }
+.legal-block h4 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--tx); margin-bottom: 10px; }
+.legal-block p { font-size: 13px; color: var(--tl); line-height: 1.72; margin-bottom: 10px; }
+.legal-block p:last-child { margin-bottom: 0; }
+.legal-check { display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; }
+.legal-check input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--g); flex-shrink: 0; margin-top: 1px; cursor: pointer; }
+.legal-check label { font-size: 14px; color: var(--tx); line-height: 1.55; cursor: pointer; }
+.legal-check label a { color: var(--g); font-weight: 600; }
+
+/* Buttons */
+.wizard-actions { display: flex; gap: 12px; margin-top: 8px; }
+.btn-next { flex: 1; padding: 15px; background: var(--g); color: #fff; border: none; border-radius: 12px; font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; text-align: center; }
+.btn-next:hover { background: var(--gb); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,134,1,.3); }
+.btn-next:disabled { background: var(--gm); cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-back { padding: 15px 28px; background: transparent; color: var(--tl); border: 2px solid var(--border); border-radius: 12px; font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; }
+.btn-back:hover { border-color: var(--tx); color: var(--tx); }
+
+/* Trust strip */
+.trust-strip { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 24px; }
+.trust-strip-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gm); }
+
 @media (max-width: 600px) {
-  .steps-grid { grid-template-columns: 1fr; }
-  .trust-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .step-indicator { padding: 20px 24px; }
+  .step-label { padding: 0 8px; }
+  .step-label-item { width: auto; }
+  .step-label-text { font-size: 10px; }
+  .wizard-wrap { margin: 0 12px; }
+  .plan-option { flex-wrap: wrap; gap: 10px; padding: 16px; }
+  .plan-price-tag { width: 100%; text-align: left; }
+  .wizard-actions { flex-direction: column-reverse; }
 }
 </style>
 </head>
@@ -139,256 +147,152 @@
 
 <section class="page-hero">
   <div class="container">
-    <div class="hero-grid">
-      <div>
-        <div class="hero-badge"><div class="hero-badge-dot"></div>Takes Less Than 5 Minutes</div>
-        <h1>Start Your<br><span>Credit Journey.</span></h1>
-        <p>Getting started with nueCredit is simple. Sign up, let us analyze your credit, and we'll handle the rest. Most clients see results within 60 days.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a href="#plans" class="btn btn-primary btn-lg">Choose Your Plan</a>
-          <a href="#how-it-works" class="btn btn-ghost btn-lg">See How It Works</a>
-        </div>
+    <div class="hero-center">
+      <h1>Start Your <span>Credit Journey</span></h1>
+      <p>Complete the form below to get started. It only takes a few minutes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wizard-section">
+  <div class="container">
+    <div class="wizard-wrap">
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-dot active" data-step="1" onclick="goToStep(1)">1</div>
+        <div class="step-line" id="line1"></div>
+        <div class="step-dot inactive" data-step="2" onclick="goToStep(2)">2</div>
+        <div class="step-line" id="line2"></div>
+        <div class="step-dot inactive" data-step="3" onclick="goToStep(3)">3</div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-glow"></div>
-        <div class="progress-float">
-          <div class="progress-float-step">
-            <div class="progress-float-num">1</div>
-            <div><div class="progress-float-text">Sign Up</div><div class="progress-float-sub">Choose your plan</div></div>
+      <div class="step-label">
+        <div class="step-label-item"><span class="step-label-text active" id="label1">Personal Information</span></div>
+        <div class="step-label-item"><span class="step-label-text" id="label2">Choose a Service</span></div>
+        <div class="step-label-item"><span class="step-label-text" id="label3">Legal Agreement</span></div>
+      </div>
+
+      <!-- STEP 1: Personal Information -->
+      <div class="step-panel active" id="panel1">
+        <div class="form-card">
+          <div class="form-card-title">Personal Information</div>
+          <div class="form-card-sub">Tell us about yourself so we can set up your account.</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John" id="fname"></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith" id="lname"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="john@example.com" id="email"></div>
+            <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" placeholder="(555) 000-0000" id="phone"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Street Address</label><input type="text" class="form-input" placeholder="123 Main Street" id="address"></div>
+            <div class="form-group"><label class="form-label">Zip Code</label><input type="text" class="form-input" placeholder="33101" id="zip"></div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="referral-box">
+            <input type="checkbox" id="referral">
+            <label for="referral" class="referral-text">Would you like to sign up with a friend or family member today and each receive 50% off your first payment?</label>
+          </div>
+          <div class="wizard-actions">
+            <button class="btn-next" onclick="goToStep(2)">Continue to Service Selection →</button>
           </div>
         </div>
-        <div class="progress-float">
-          <div class="progress-float-step">
-            <div class="progress-float-num">2</div>
-            <div><div class="progress-float-text">We Analyze</div><div class="progress-float-sub">Review your report</div></div>
+      </div>
+
+      <!-- STEP 2: Choose a Service & Pay -->
+      <div class="step-panel" id="panel2">
+        <div class="form-card">
+          <div class="form-card-title">Choose Your Service</div>
+          <div class="form-card-sub">Select the plan that best fits your credit restoration needs.</div>
+
+          <div class="plan-options">
+            <div class="plan-option" onclick="selectPlan(this, 'basic', 79, 99)">
+              <div class="plan-radio"></div>
+              <div class="plan-details">
+                <div class="plan-name">Basic Plan</div>
+                <div class="plan-desc">Up to 5 disputes/month, client portal, email support</div>
+              </div>
+              <div class="plan-price-tag">$79<span class="plan-price-per">/mo</span></div>
+            </div>
+            <div class="plan-option selected" onclick="selectPlan(this, 'pro', 149, 149)">
+              <div class="plan-popular">Most Popular</div>
+              <div class="plan-radio"></div>
+              <div class="plan-details">
+                <div class="plan-name">Pro Plan</div>
+                <div class="plan-desc">Up to 10 disputes/month, SMS alerts, priority handling</div>
+              </div>
+              <div class="plan-price-tag">$149<span class="plan-price-per">/mo</span></div>
+            </div>
+            <div class="plan-option" onclick="selectPlan(this, 'premium', 249, 199)">
+              <div class="plan-radio"></div>
+              <div class="plan-details">
+                <div class="plan-name">Premium Plan</div>
+                <div class="plan-desc">Unlimited disputes, dedicated specialist, expedited handling</div>
+              </div>
+              <div class="plan-price-tag">$249<span class="plan-price-per">/mo</span></div>
+            </div>
+          </div>
+
+          <div class="order-summary" id="orderSummary">
+            <div class="order-row"><span class="order-label">Monthly subscription</span><span class="order-val" id="sumMonthly">$149/mo</span></div>
+            <div class="order-row"><span class="order-label">One-time enrollment fee</span><span class="order-val" id="sumEnroll">$149</span></div>
+            <div class="order-row total"><span>Due today</span><span id="sumTotal">$298</span></div>
+          </div>
+
+          <div class="wizard-actions">
+            <button class="btn-back" onclick="goToStep(1)">← Back</button>
+            <button class="btn-next" onclick="goToStep(3)">Continue to Agreement →</button>
           </div>
         </div>
-        <div class="progress-float">
-          <div class="progress-float-step">
-            <div class="progress-float-num">3</div>
-            <div><div class="progress-float-text">We Dispute</div><div class="progress-float-sub">Challenge inaccuracies</div></div>
+      </div>
+
+      <!-- STEP 3: Legal Agreement -->
+      <div class="step-panel" id="panel3">
+        <div class="form-card">
+          <div class="form-card-title">Legal Agreement</div>
+          <div class="form-card-sub">Please review and accept the following agreements to complete your enrollment.</div>
+
+          <div class="legal-block">
+            <h4>Credit Repair Organizations Act (CROA) Disclosure</h4>
+            <p>Under the Credit Repair Organizations Act (CROA), you have the right to dispute inaccurate information in your credit report by contacting the credit bureau directly. You are not required to use a credit repair organization to exercise this right.</p>
+            <p>nueCredit cannot guarantee specific results. No one can lawfully remove accurate and timely negative information from your credit report. You have the right to obtain a copy of your credit report from a credit bureau.</p>
+            <p>You have three business days to cancel this contract without penalty. If you cancel, any payment you've made will be returned to you within five business days.</p>
+            <h4>Service Agreement</h4>
+            <p>By enrolling in nueCredit's credit restoration service, you authorize nueCredit to act on your behalf in communicating with credit bureaus, creditors, and other entities for the purpose of investigating and disputing inaccurate, incomplete, or unverifiable information on your credit reports.</p>
+            <p>You understand that results vary based on individual credit profiles and that nueCredit does not guarantee any specific outcome. Your subscription may be canceled at any time without penalty.</p>
+          </div>
+
+          <div class="legal-check">
+            <input type="checkbox" id="agree1">
+            <label for="agree1">I have read and understand the <a href="#">CROA Disclosure</a> and acknowledge my right to cancel within 3 business days.</label>
+          </div>
+          <div class="legal-check">
+            <input type="checkbox" id="agree2">
+            <label for="agree2">I agree to nueCredit's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, and authorize nueCredit to act on my behalf.</label>
+          </div>
+          <div class="legal-check" style="border-bottom:none;">
+            <input type="checkbox" id="agree3">
+            <label for="agree3">I consent to receive communications from nueCredit regarding my account via email, phone, and SMS.</label>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <div class="wizard-actions">
+            <button class="btn-back" onclick="goToStep(2)">← Back</button>
+            <button class="btn-next" id="submitBtn" onclick="submitForm()">Submit & Start My Credit Repair →</button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
 
-<section class="stats-bar section-sm">
-  <div class="container">
-    <div class="stats-row">
-      <div class="stat-item reveal"><span class="stat-val">60 days</span><span class="stat-lbl">Average Time to See Results</span></div>
-      <div class="stat-item reveal reveal-delay-1"><span class="stat-val">+73pts</span><span class="stat-lbl">Average Score Increase</span></div>
-      <div class="stat-item reveal reveal-delay-2"><span class="stat-val">30 sec</span><span class="stat-lbl">To Create Your Account</span></div>
-      <div class="stat-item reveal reveal-delay-3"><span class="stat-val">1,200+</span><span class="stat-lbl">Clients Helped</span></div>
-    </div>
-  </div>
-</section>
+      <!-- Trust strip -->
+      <div class="trust-strip">
+        <div class="trust-strip-item">🔒 256-bit Encryption</div>
+        <div class="trust-strip-item">⚖️ CROA Compliant</div>
+        <div class="trust-strip-item">🚫 Cancel Anytime</div>
+        <div class="trust-strip-item">🇺🇸 US-Based Team</div>
+      </div>
 
-<section class="section steps-section" id="how-it-works">
-  <div class="container">
-    <div class="section-header center reveal">
-      <div class="eyebrow">How It Works</div>
-      <h2>Three Simple Steps</h2>
-      <p>No complicated forms. No long wait times. Just a clear path to better credit.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card reveal">
-        <div class="step-num">1</div>
-        <h3>Choose Your Plan</h3>
-        <p>Select the plan that fits your needs. Every plan includes a full credit analysis, dispute filing, and real-time progress tracking.</p>
-        <span class="step-time">30 seconds</span>
-      </div>
-      <div class="step-card reveal reveal-delay-1">
-        <div class="step-num">2</div>
-        <h3>We Analyze Your Credit</h3>
-        <p>Our specialists review your credit reports from all three bureaus. We identify every inaccuracy, outdated item, and disputable entry.</p>
-        <span class="step-time">24–48 hours</span>
-      </div>
-      <div class="step-card reveal reveal-delay-2">
-        <div class="step-num">3</div>
-        <h3>We Dispute & You Improve</h3>
-        <p>We file legally-compliant disputes with Equifax, Experian, and TransUnion. Track every update in real time through your client portal.</p>
-        <span class="step-time">30–60 days</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="plans">
-  <div class="container">
-    <div class="section-header center reveal">
-      <div class="eyebrow">Choose Your Plan</div>
-      <h2>Simple Plans. Real Results.</h2>
-      <p>No contracts. No hidden fees. Cancel anytime.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card reveal">
-        <div class="price-name">Basic</div>
-        <div class="price-amount"><span class="price-num">$79</span><span class="price-per">/mo</span></div>
-        <div class="price-enroll">+ $99 one-time enrollment</div>
-        <div class="price-divider"></div>
-        <ul class="price-feats">
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Credit analysis — all 3 bureaus</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Up to 5 disputes per month</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Client portal access</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Email support</li>
-          <li class="price-feat"><span class="price-feat-check no">—</span>Priority dispute handling</li>
-          <li class="price-feat"><span class="price-feat-check no">—</span>Dedicated specialist</li>
-        </ul>
-        <a href="#" class="price-btn">Get Started</a>
-      </div>
-      <div class="price-card hot reveal">
-        <div class="price-pop">Most Popular</div>
-        <div class="price-name">Pro</div>
-        <div class="price-amount"><span class="price-num">$149</span><span class="price-per">/mo</span></div>
-        <div class="price-enroll">+ $149 one-time enrollment</div>
-        <div class="price-divider"></div>
-        <ul class="price-feats">
-          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Credit analysis — all 3 bureaus</li>
-          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Up to 10 disputes per month</li>
-          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Client portal + SMS alerts</li>
-          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Phone + email support</li>
-          <li class="price-feat"><span class="price-feat-check yes hot-check">✓</span>Priority dispute handling</li>
-          <li class="price-feat"><span class="price-feat-check no">—</span>Dedicated specialist</li>
-        </ul>
-        <a href="#" class="price-btn hot-btn">Get Started</a>
-      </div>
-      <div class="price-card reveal">
-        <div class="price-name">Premium</div>
-        <div class="price-amount"><span class="price-num">$249</span><span class="price-per">/mo</span></div>
-        <div class="price-enroll">+ $199 one-time enrollment</div>
-        <div class="price-divider"></div>
-        <ul class="price-feats">
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Credit analysis — all 3 bureaus</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Unlimited disputes</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Client portal + SMS + calls</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Priority phone support</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Expedited dispute handling</li>
-          <li class="price-feat"><span class="price-feat-check yes">✓</span>Dedicated credit specialist</li>
-        </ul>
-        <a href="#" class="price-btn">Get Started</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section need-section">
-  <div class="container">
-    <div class="section-header center reveal">
-      <div class="eyebrow light">Before You Start</div>
-      <h2 style="color:#fff;">What You'll Need</h2>
-      <p style="color:rgba(255,255,255,.45);">Have these ready to make sign-up as fast as possible.</p>
-    </div>
-    <div class="need-grid">
-      <div class="need-card reveal">
-        <div class="need-icon">🪪</div>
-        <div>
-          <h4>Valid Government ID</h4>
-          <p>A driver's license, state ID, or passport. We verify your identity to protect your account and comply with federal regulations.</p>
-        </div>
-      </div>
-      <div class="need-card reveal reveal-delay-1">
-        <div class="need-icon">📋</div>
-        <div>
-          <h4>Recent Credit Report</h4>
-          <p>A credit report from any of the three bureaus (Equifax, Experian, TransUnion). You can get a free one at annualcreditreport.com.</p>
-        </div>
-      </div>
-      <div class="need-card reveal reveal-delay-2">
-        <div class="need-icon">📄</div>
-        <div>
-          <h4>Proof of Address</h4>
-          <p>A utility bill, bank statement, or any official document showing your current address. Must be dated within the last 90 days.</p>
-        </div>
-      </div>
-      <div class="need-card reveal">
-        <div class="need-icon">💳</div>
-        <div>
-          <h4>Payment Method</h4>
-          <p>A debit or credit card for your subscription. All payments are processed securely. You can cancel anytime with no penalties.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section-sm trust-section">
-  <div class="container">
-    <div class="section-header center reveal">
-      <div class="eyebrow">Your Trust, Our Priority</div>
-      <h2>Built on Security & Compliance</h2>
-    </div>
-    <div class="trust-grid">
-      <div class="trust-card reveal">
-        <div class="trust-icon">🔒</div>
-        <h4>256-bit Encryption</h4>
-        <p>Bank-level security protects every piece of data you share with us.</p>
-      </div>
-      <div class="trust-card reveal reveal-delay-1">
-        <div class="trust-icon">⚖️</div>
-        <h4>CROA Compliant</h4>
-        <p>Fully compliant with the Credit Repair Organizations Act.</p>
-      </div>
-      <div class="trust-card reveal reveal-delay-2">
-        <div class="trust-icon">💰</div>
-        <h4>No Hidden Fees</h4>
-        <p>Transparent pricing. What you see is what you pay — no surprises.</p>
-      </div>
-      <div class="trust-card reveal reveal-delay-3">
-        <div class="trust-icon">🚫</div>
-        <h4>Cancel Anytime</h4>
-        <p>No contracts, no commitments. Stay because it works, not because you have to.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section faq-section">
-  <div class="container">
-    <div class="section-header center reveal">
-      <div class="eyebrow">FAQ</div>
-      <h2>Getting Started Questions</h2>
-      <p>Everything you need to know before signing up.</p>
-    </div>
-    <div class="faq-grid">
-      <div class="faq-item reveal">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How long does it take to see results?<div class="faq-icon">+</div></div>
-        <div class="faq-a"><div class="faq-a-inner">Most clients see their first improvements within 30–60 days. The full credit restoration process typically takes 4–6 months depending on the complexity of your case.</div></div>
-      </div>
-      <div class="faq-item reveal reveal-delay-1">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Will this hurt my credit score?<div class="faq-icon">+</div></div>
-        <div class="faq-a"><div class="faq-a-inner">No. Filing disputes is a legal right under the Fair Credit Reporting Act (FCRA). The dispute process does not negatively affect your credit score. In fact, removing inaccurate items typically improves it.</div></div>
-      </div>
-      <div class="faq-item reveal reveal-delay-2">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I cancel at any time?<div class="faq-icon">+</div></div>
-        <div class="faq-a"><div class="faq-a-inner">Yes. There are no contracts or long-term commitments. You can cancel your subscription at any time from your client portal or by contacting our support team.</div></div>
-      </div>
-      <div class="faq-item reveal">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What if I don't know my credit score?<div class="faq-icon">+</div></div>
-        <div class="faq-a"><div class="faq-a-inner">No problem. Once you sign up, we'll pull your credit reports from all three bureaus as part of our analysis. We'll give you a complete picture of where you stand and what we can improve.</div></div>
-      </div>
-      <div class="faq-item reveal reveal-delay-1">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is there a guarantee?<div class="faq-icon">+</div></div>
-        <div class="faq-a"><div class="faq-a-inner">While no credit repair company can guarantee specific results (that would actually be illegal under CROA), our track record speaks for itself. Our average client sees a 73-point improvement, and we have a 99% satisfaction rate.</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section cta-banner">
-  <div class="container">
-    <div class="cta-inner reveal">
-      <div class="eyebrow light" style="justify-content:center;">No Risk. Real Results.</div>
-      <h2>Your Better Credit<br>Starts Today</h2>
-      <p>Join 1,200+ clients who've taken control of their financial future.</p>
-      <a href="#plans" class="btn btn-white btn-lg">Choose Your Plan</a>
-      <div class="cta-trust">
-        <div class="cta-trust-item">🔒 Secure Payment</div>
-        <div class="cta-trust-item">✓ CROA Compliant</div>
-        <div class="cta-trust-item">✓ Cancel Anytime</div>
-        <div class="cta-trust-item">✓ US-Based Team</div>
-      </div>
     </div>
   </div>
 </section>
@@ -435,5 +339,59 @@
 </footer>
 
 <script src="../js/main.js"></script>
+<script>
+let currentStep = 1;
+let selectedPlan = { name: 'pro', monthly: 149, enroll: 149 };
+
+function goToStep(step) {
+  if (step < 1 || step > 3) return;
+  currentStep = step;
+
+  // Update panels
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel' + step).classList.add('active');
+
+  // Update dots
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    const s = i + 1;
+    dot.className = 'step-dot';
+    if (s < step) dot.classList.add('completed');
+    else if (s === step) dot.classList.add('active');
+    else dot.classList.add('inactive');
+  });
+
+  // Update lines
+  document.getElementById('line1').className = step > 1 ? 'step-line filled' : 'step-line';
+  document.getElementById('line2').className = step > 2 ? 'step-line filled' : 'step-line';
+
+  // Update labels
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('label' + i).className = i === step ? 'step-label-text active' : 'step-label-text';
+  }
+
+  // Scroll to top of wizard
+  document.querySelector('.wizard-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectPlan(el, name, monthly, enroll) {
+  document.querySelectorAll('.plan-option').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlan = { name, monthly, enroll };
+  document.getElementById('sumMonthly').textContent = '$' + monthly + '/mo';
+  document.getElementById('sumEnroll').textContent = '$' + enroll;
+  document.getElementById('sumTotal').textContent = '$' + (monthly + enroll);
+}
+
+function submitForm() {
+  const a1 = document.getElementById('agree1').checked;
+  const a2 = document.getElementById('agree2').checked;
+  const a3 = document.getElementById('agree3').checked;
+  if (!a1 || !a2 || !a3) {
+    alert('Please accept all agreements to continue.');
+    return;
+  }
+  alert('Thank you! Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours.');
+}
+</script>
 </body>
 </html>
