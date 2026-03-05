@@ -314,10 +314,8 @@
       </div>
       <button class="nue-close-mobile" aria-label="Close chat">&times;</button>
     </div>
-    <div class="nue-messages" id="nueMessages">
-      <div class="nue-msg bot">Hi! I'm <strong>nue</strong>, nueCredit's AI assistant. I can help you understand credit restoration, explore our services, or answer any questions. What can I help you with?</div>
-    </div>
-    <div class="nue-quick" id="nueQuick">
+    <div class="nue-messages" id="nueMessages"></div>
+    <div class="nue-quick" id="nueQuick" style="display:none;">
       <button data-q="How does credit restoration work?">How it works</button>
       <button data-q="What are your pricing plans?">Pricing</button>
       <button data-q="What free tools do you offer?">Free tools</button>
@@ -338,6 +336,7 @@
   /* ── State ──────────────────────────────────── */
   var isOpen = false;
   var isSending = false;
+  var welcomePlayed = false;
   var history = [];
 
   /* ── Elements ──────────────────────────────── */
@@ -348,6 +347,62 @@
   var unreadDot = bubble.querySelector('.nue-unread');
   var closeMobile = panel.querySelector('.nue-close-mobile');
 
+  /* ── Staggered Welcome ────────────────────── */
+  function playWelcome() {
+    if (welcomePlayed) return;
+    welcomePlayed = true;
+
+    var msgs = [
+      { text: 'Hey! \uD83D\uDC4B', delay: 300 },
+      { text: "I'm nue, your credit assistant from nueCredit.", delay: 1000 },
+      { text: 'I can help with credit questions, explain our services, or get you started with a free consultation.', delay: 1400 },
+      { text: 'What can I help you with today?', delay: 1000 },
+    ];
+
+    var cumulative = 0;
+    var typingEl = null;
+
+    function showTyping() {
+      typingEl = document.createElement('div');
+      typingEl.className = 'nue-typing show';
+      typingEl.innerHTML = '<span></span><span></span><span></span>';
+      messagesEl.appendChild(typingEl);
+      scrollToBottom();
+    }
+
+    function removeTyping() {
+      if (typingEl) { typingEl.remove(); typingEl = null; }
+    }
+
+    msgs.forEach(function (m, i) {
+      /* Show typing indicator before each message */
+      var typingTime = cumulative;
+      var msgTime = cumulative + m.delay;
+      cumulative = msgTime + 200; /* small gap between messages */
+
+      if (i === 0) {
+        /* First message appears quickly, no typing */
+        setTimeout(function () {
+          appendMessage('bot', m.text);
+        }, m.delay);
+        cumulative = m.delay + 200;
+      } else {
+        setTimeout(function () { showTyping(); }, typingTime);
+        setTimeout(function () {
+          removeTyping();
+          appendMessage('bot', m.text);
+          /* After last message, show quick actions */
+          if (i === msgs.length - 1) {
+            setTimeout(function () {
+              quickEl.style.display = 'flex';
+              scrollToBottom();
+            }, 300);
+          }
+        }, msgTime);
+      }
+    });
+  }
+
   /* ── Toggle Chat ──────────────────────────── */
   function toggleChat() {
     isOpen = !isOpen;
@@ -355,6 +410,7 @@
     panel.classList.toggle('open', isOpen);
     if (isOpen) {
       unreadDot.classList.remove('show');
+      if (!welcomePlayed) playWelcome();
       setTimeout(function () { inputEl.focus(); }, 100);
     }
   }
