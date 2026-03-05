@@ -788,9 +788,9 @@
   // --- Step 3: Display results ---
   function displayResults(data) {
     // Estimated score range
-    const estimatedLow = data.estimatedScoreLow || data.estimatedScore - 10 || toolData.currentScore;
-    const estimatedHigh = data.estimatedScoreHigh || data.estimatedScore + 10 || toolData.currentScore;
-    const estimatedMid = data.estimatedScore || Math.round((estimatedLow + estimatedHigh) / 2);
+    const estimatedLow = (data.estimatedRange && data.estimatedRange.low) || data.estimatedScoreLow || toolData.currentScore;
+    const estimatedHigh = (data.estimatedRange && data.estimatedRange.high) || data.estimatedScoreHigh || toolData.currentScore;
+    const estimatedMid = Math.round((estimatedLow + estimatedHigh) / 2);
 
     // Score gauge
     const gaugeBar = document.getElementById('gaugeBar');
