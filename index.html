@@ -8,9 +8,7 @@
 <link rel="stylesheet" href="css/globals.css">
 <style>
 /* ── PAGE-SPECIFIC ──────────────────────────────────────────── */
-.hero { background: var(--bk); padding: 160px 0 100px; position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 700px; height: 700px; background: radial-gradient(circle, rgba(0,134,1,.12) 0%, transparent 70%); pointer-events: none; }
-.hero::after  { content: ''; position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,166,81,.06) 0%, transparent 70%); pointer-events: none; }
+.hero { background: var(--bk) url('images/hero-bg.png') center/cover no-repeat; padding: 160px 0 100px; position: relative; overflow: hidden; }
 .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,134,1,.1); border: 1px solid rgba(0,134,1,.22); color: var(--gb); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 100px; margin-bottom: 24px; }
 .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gb); animation: pulse 2s infinite; }
@@ -47,7 +45,7 @@
 
 <nav id="nav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo"><img src="images/logo.svg" alt="nueCredit"></a>
+    <a href="index.html" class="nav-logo"><img src="images/nuecredit-logo.png" alt="nueCredit"></a>
     <ul class="nav-links">
       <li><a href="pages/how-it-works.html">How It Works</a></li>
       <li><a href="pages/pricing.html">Pricing</a></li>
@@ -296,7 +294,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="footer-logo"><img src="images/logo.svg" alt="nueCredit"></a>
+        <a href="index.html" class="footer-logo"><img src="images/nuecredit-logo.png" alt="nueCredit"></a>
         <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
       </div>
       <div>

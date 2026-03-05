@@ -112,7 +112,7 @@ nav {
   display: flex; align-items: center; justify-content: space-between;
 }
 .nav-logo { display: flex; align-items: center; }
-.nav-logo img { height: 24px; width: auto; }
+.nav-logo img { height: 20px; width: auto; }
 .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
 .nav-links a { font-size: 14px; font-weight: 500; color: rgba(255,255,255,.55); transition: color .2s; }
 .nav-links a:hover, .nav-links a.active { color: #fff; }
