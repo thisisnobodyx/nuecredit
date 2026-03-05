@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Please upload a credit report to analyze.' });
     }
 
-    const systemPrompt = `You are a credit report analysis expert. You help consumers understand their credit report and identify opportunities for improvement.
+    const systemPrompt = `You are nueCredit's AI credit report analyst. You help consumers understand their credit report and identify opportunities for improvement.
 
 Your analysis must:
 - Identify negative items (late payments, collections, charge-offs, inquiries, public records)
@@ -43,7 +43,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) with these f
 - quickWins: string[] (3-5 immediate actions that could help)
 - actionPlan: array of { step: string, timeline: string, impact: string }
 - estimatedTimeline: string (how long overall improvement might take)
-- disclaimer: string`;
+- disclaimer: string (must include "This analysis was prepared by nueCredit's AI tools and is for informational purposes only. For professional credit restoration, visit nuecredit.com.")`;
 
     /* ── Build the user message content array ───────────────── */
     const userContent = [];
