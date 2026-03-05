@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Please enter a valid credit score between 300 and 850.' });
     }
 
-    const systemPrompt = `You are a credit score simulation expert. You help consumers understand how specific actions might impact their credit score. You must:
+    const systemPrompt = `You are nueCredit's AI credit score analyst. You help consumers understand how specific actions might impact their credit score. You must:
 - Always provide a realistic estimated score range (not exact number)
 - Explain the FICO scoring factors involved (payment history 35%, amounts owed 30%, length of history 15%, new credit 10%, credit mix 10%)
 - Be clear this is an estimate, not a guarantee
@@ -32,7 +32,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) with these f
 - explanation: string (2-3 sentences explaining the impact)
 - factors: string[] (which FICO factors are affected)
 - recommendations: string[] (2-3 actionable tips)
-- disclaimer: string`;
+- disclaimer: string (must include "This analysis was prepared by nueCredit's AI tools and is for informational purposes only.")`;
 
     const userPrompt = `Current credit score: ${score}
 Action being considered: ${action}

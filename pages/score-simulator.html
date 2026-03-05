@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Score Simulator | nueCredit</title>
+  <meta name="description" content="See how financial decisions might impact your credit score. Free AI-powered credit score simulator from nueCredit.">
+  <link rel="stylesheet" href="../css/globals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* --- Page Hero --- */
+    .page-hero {
+      background: linear-gradient(135deg, var(--bk) 0%, #0d1f0d 50%, var(--bk) 100%);
+      padding: 120px 0 64px;
+      text-align: center;
+    }
+    .hero-center { max-width: 640px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex;
+      color: rgba(255,255,255,.5);
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 16px;
+      font-family: 'DM Sans', sans-serif;
+      transition: color .2s;
+    }
+    .back-link:hover { color: #fff; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,134,1,.12);
+      border: 1px solid rgba(0,134,1,.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gb);
+      margin-bottom: 20px;
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px;
+      background: var(--gb);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    .page-hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .page-hero h1 span { color: var(--gb); }
+    .page-hero p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* --- Tool Section --- */
+    .tool-section {
+      padding: 64px 0 80px;
+      background: var(--bg);
+    }
+    .tool-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--wh);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+    .tool-card-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* --- Form Elements --- */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .form-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tx);
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      background: var(--wh);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--g);
+      box-shadow: 0 0 0 3px rgba(0,134,1,.1);
+    }
+    .form-select { cursor: pointer; }
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--g);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .form-submit:hover { background: #007501; }
+    .form-submit:active { transform: scale(.98); }
+    .form-submit:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+    .form-error {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: #d32f2f;
+      margin-top: 8px;
+      display: none;
+    }
+    .form-error.visible { display: block; }
+
+    /* --- Spinner --- */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* --- Step Panels --- */
+    .step-panel {
+      display: none;
+      animation: slideIn .4s ease;
+    }
+    .step-panel.active { display: block; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Info Panel --- */
+    .info-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+    .info-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .info-secure {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--gm);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* --- Results --- */
+    .branded-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .branded-header img { height: 28px; }
+    .branded-header span {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g);
+    }
+
+    /* Score Gauge */
+    .score-gauge {
+      margin-bottom: 32px;
+    }
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--gm);
+      margin-bottom: 8px;
+    }
+    .gauge-bar {
+      position: relative;
+      height: 20px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #d32f2f 0%, #f57c00 25%, #fbc02d 50%, #66bb6a 75%, #2e7d32 100%);
+      overflow: visible;
+    }
+    .gauge-range {
+      position: absolute;
+      top: -4px;
+      height: 28px;
+      background: rgba(0,134,1,.18);
+      border: 2px solid var(--gb);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .gauge-marker {
+      position: absolute;
+      top: -8px;
+      width: 4px;
+      height: 36px;
+      background: var(--tx);
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+    .gauge-marker-label {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--tx);
+      white-space: nowrap;
+      background: var(--wh);
+      padding: 2px 6px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .score-number {
+      font-family: 'Sora', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--tx);
+      line-height: 1;
+    }
+    .score-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+      margin-top: 4px;
+    }
+
+    .impact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .impact-badge.positive { background: rgba(0,134,1,.1); color: var(--g); }
+    .impact-badge.negative { background: rgba(211,47,47,.1); color: #d32f2f; }
+    .impact-badge.neutral { background: rgba(144,144,144,.12); color: var(--gm); }
+
+    .result-section {
+      margin-bottom: 24px;
+    }
+    .result-section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 10px;
+    }
+    .result-section p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+      line-height: 1.7;
+    }
+    .result-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .result-section ul li {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+      line-height: 1.7;
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .result-section ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gb);
+    }
+
+    .result-disclaimer {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--gm);
+      line-height: 1.6;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .result-cta {
+      background: linear-gradient(135deg, var(--bk) 0%, #1a2a1a 100%);
+      border-radius: var(--r-lg);
+      padding: 32px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .result-cta h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .result-cta p {
+      font-size: 14px;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 20px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .result-cta .btn-primary {
+      display: inline-flex;
+      padding: 13px 28px;
+      font-size: 14px;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 900px) {
+      .page-hero { padding: 100px 0 48px; }
+      .page-hero h1 { font-size: 38px; }
+      .tool-card { padding: 32px 24px; }
+    }
+    @media (max-width: 600px) {
+      .page-hero { padding: 90px 0 40px; }
+      .page-hero h1 { font-size: 30px; }
+      .page-hero p { font-size: 15px; }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .tool-card {
+        padding: 24px 18px;
+        border-radius: var(--r);
+      }
+      .tool-card-title,
+      .info-title { font-size: 19px; }
+      .score-number { font-size: 44px; }
+      .result-cta { padding: 24px 18px; }
+      .result-cta h3 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="tools.html">Tools</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+      <a href="get-started.html" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="how-it-works.html">How It Works</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
+  <a href="about.html">About</a>
+  <a href="partners.html">Partners</a>
+  <a href="tools.html">Tools</a>
+  <a href="contact.html">Contact</a>
+  <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+</div>
+
+<!-- Hero -->
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-center">
+      <a href="tools.html" class="back-link">&larr; Back to All Tools</a>
+      <div class="hero-badge"><div class="hero-badge-dot"></div>AI-Powered</div>
+      <h1>Credit Score <span>Simulator.</span></h1>
+      <p>See how financial decisions might impact your credit score. Enter your current score and an action to get a personalized AI analysis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Tool Section -->
+<section class="tool-section">
+  <div class="container">
+    <div class="tool-card">
+
+      <!-- Step 1: Tool Form -->
+      <div id="step1" class="step-panel active">
+        <div class="tool-card-title">Simulate a Credit Action</div>
+        <div class="tool-card-sub">Enter your current score and select an action to see the estimated impact.</div>
+
+        <div class="form-group">
+          <label class="form-label" for="creditScore">Current Credit Score</label>
+          <input type="number" id="creditScore" class="form-input" placeholder="e.g. 620" min="300" max="850" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="action">Action to Simulate</label>
+          <select id="action" class="form-select" required>
+            <option value="" disabled selected>Select an action...</option>
+            <option value="pay_off_debt">Pay Off Debt</option>
+            <option value="remove_late_payment">Remove Late Payment</option>
+            <option value="open_new_card">Open New Credit Card</option>
+            <option value="close_old_account">Close Old Account</option>
+            <option value="reduce_utilization">Reduce Credit Utilization</option>
+            <option value="remove_collection">Remove Collection Account</option>
+            <option value="add_authorized_user">Add Authorized User</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="amount">Amount (optional)</label>
+          <input type="number" id="amount" class="form-input" placeholder="e.g. 5000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="details">Additional Details (optional)</label>
+          <textarea id="details" class="form-textarea" placeholder="Any extra context about your situation..."></textarea>
+        </div>
+
+        <button class="form-submit" onclick="submitTool()">Simulate Impact &rarr;</button>
+        <div id="toolError" class="form-error"></div>
+      </div>
+
+      <!-- Step 2: Info Collection -->
+      <div id="step2" class="step-panel">
+        <div class="info-title">Get Your Free Results</div>
+        <div class="info-sub">Enter your info below to receive your personalized credit score analysis.</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name</label>
+            <input type="text" id="firstName" class="form-input" placeholder="John" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name</label>
+            <input type="text" id="lastName" class="form-input" placeholder="Doe" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone</label>
+            <input type="tel" id="phone" class="form-input" placeholder="(555) 123-4567">
+          </div>
+        </div>
+
+        <button class="form-submit" id="infoSubmitBtn" onclick="submitInfo()">Get My Results &rarr;</button>
+        <div id="infoError" class="form-error"></div>
+        <div class="info-secure">Your info is secure and never shared. &#128274;</div>
+      </div>
+
+      <!-- Step 3: Results -->
+      <div id="step3" class="step-panel">
+        <div class="branded-header">
+          <img src="../images/nuecredit-logo.png" alt="nueCredit">
+          <span>nueCredit AI Analysis</span>
+        </div>
+
+        <div class="score-gauge">
+          <div class="gauge-labels">
+            <span>300</span>
+            <span>Poor</span>
+            <span>Fair</span>
+            <span>Good</span>
+            <span>Excellent</span>
+            <span>850</span>
+          </div>
+          <div class="gauge-bar" id="gaugeBar">
+            <div class="gauge-range" id="gaugeRange"></div>
+            <div class="gauge-marker" id="gaugeMarker">
+              <div class="gauge-marker-label" id="gaugeMarkerLabel"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-display">
+          <div class="score-number" id="scoreNumber"></div>
+          <div class="score-label" id="scoreLabel">Estimated Score Range</div>
+        </div>
+
+        <div style="text-align:center;">
+          <div class="impact-badge" id="impactBadge"></div>
+        </div>
+
+        <div class="result-section" id="explanationSection">
+          <div class="result-section-title">Explanation</div>
+          <p id="explanationText"></p>
+        </div>
+
+        <div class="result-section" id="factorsSection">
+          <div class="result-section-title">Key Factors</div>
+          <ul id="factorsList"></ul>
+        </div>
+
+        <div class="result-section" id="recommendationsSection">
+          <div class="result-section-title">Recommendations</div>
+          <ul id="recommendationsList"></ul>
+        </div>
+
+        <div class="result-disclaimer">
+          Disclaimer: This simulation is for educational purposes only and does not guarantee actual credit score changes. Real results depend on your full credit profile, creditor reporting, and scoring model used. nueCredit is not a credit repair organization and does not provide financial advice.
+        </div>
+
+        <div class="result-cta">
+          <h3>Ready for Professional Results?</h3>
+          <p>Our credit restoration experts can help improve your score by 50-100+ points.</p>
+          <a href="get-started.html" class="btn btn-primary">Get Started with nueCredit &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="tools.html">AI Tools</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="get-started.html">Credit Restoration</a></li>
+          <li><a href="quick-fix.html">Quick Fix VIP</a></li>
+          <li><a href="score-simulator.html">Score Simulator</a></li>
+          <li><a href="dispute-letter.html">Dispute Letters</a></li>
+          <li><a href="report-analyzer.html">Report Analyzer</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="partners.html">Become a Partner</a></li>
+          <li><a href="partners.html">Referral Program</a></li>
+          <li><a href="partners.html">Affiliate Portal</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">CROA Disclosure</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+<script>
+  // --- Tool data storage ---
+  let toolData = {};
+
+  // --- Step 1: Validate and submit tool form ---
+  function submitTool() {
+    const scoreInput = document.getElementById('creditScore');
+    const actionInput = document.getElementById('action');
+    const amountInput = document.getElementById('amount');
+    const detailsInput = document.getElementById('details');
+    const errorEl = document.getElementById('toolError');
+
+    const score = parseInt(scoreInput.value, 10);
+    const action = actionInput.value;
+
+    // Reset error
+    errorEl.classList.remove('visible');
+    errorEl.textContent = '';
+
+    // Validate score
+    if (!score || score < 300 || score > 850) {
+      errorEl.textContent = 'Please enter a valid credit score between 300 and 850.';
+      errorEl.classList.add('visible');
+      scoreInput.focus();
+      return;
+    }
+
+    // Validate action
+    if (!action) {
+      errorEl.textContent = 'Please select an action to simulate.';
+      errorEl.classList.add('visible');
+      actionInput.focus();
+      return;
+    }
+
+    // Store tool data
+    toolData = {
+      currentScore: score,
+      action: action,
+      amount: amountInput.value ? parseFloat(amountInput.value) : null,
+      details: detailsInput.value.trim() || null
+    };
+
+    // Transition to Step 2
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+  }
+
+  // --- Step 2: Validate info and submit ---
+  async function submitInfo() {
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const errorEl = document.getElementById('infoError');
+    const submitBtn = document.getElementById('infoSubmitBtn');
+
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+    const email = emailInput.value.trim();
+    const phone = phoneInput.value.trim();
+
+    // Reset error
+    errorEl.classList.remove('visible');
+    errorEl.textContent = '';
+
+    // Validate
+    if (!firstName) {
+      errorEl.textContent = 'Please enter your first name.';
+      errorEl.classList.add('visible');
+      firstNameInput.focus();
+      return;
+    }
+    if (!lastName) {
+      errorEl.textContent = 'Please enter your last name.';
+      errorEl.classList.add('visible');
+      lastNameInput.focus();
+      return;
+    }
+    if (!email || !isValidEmail(email)) {
+      errorEl.textContent = 'Please enter a valid email address.';
+      errorEl.classList.add('visible');
+      emailInput.focus();
+      return;
+    }
+
+    // Disable button, show spinner
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Analyzing...';
+
+    try {
+      // POST lead data
+      await fetch('/api/tool-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          phone,
+          toolUsed: 'simulator'
+        })
+      });
+
+      // POST tool data for AI analysis
+      const response = await fetch('/api/ai/score-simulator', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(toolData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get analysis. Please try again.');
+      }
+
+      const data = await response.json();
+      displayResults(data);
+
+    } catch (err) {
+      errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+      errorEl.classList.add('visible');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Get My Results &rarr;';
+    }
+  }
+
+  // --- Step 3: Display results ---
+  function displayResults(data) {
+    // Estimated score range
+    const estimatedLow = data.estimatedScoreLow || data.estimatedScore - 10 || toolData.currentScore;
+    const estimatedHigh = data.estimatedScoreHigh || data.estimatedScore + 10 || toolData.currentScore;
+    const estimatedMid = data.estimatedScore || Math.round((estimatedLow + estimatedHigh) / 2);
+
+    // Score gauge
+    const gaugeBar = document.getElementById('gaugeBar');
+    const gaugeRange = document.getElementById('gaugeRange');
+    const gaugeMarker = document.getElementById('gaugeMarker');
+    const gaugeMarkerLabel = document.getElementById('gaugeMarkerLabel');
+
+    const rangeTotal = 850 - 300;
+    const currentPct = ((toolData.currentScore - 300) / rangeTotal) * 100;
+    const lowPct = ((estimatedLow - 300) / rangeTotal) * 100;
+    const highPct = ((estimatedHigh - 300) / rangeTotal) * 100;
+
+    gaugeMarker.style.left = currentPct + '%';
+    gaugeMarkerLabel.textContent = 'Current: ' + toolData.currentScore;
+
+    gaugeRange.style.left = lowPct + '%';
+    gaugeRange.style.width = (highPct - lowPct) + '%';
+
+    // Score display
+    document.getElementById('scoreNumber').textContent = estimatedLow + ' - ' + estimatedHigh;
+    document.getElementById('scoreLabel').textContent = 'Estimated Score Range';
+
+    // Impact badge
+    const impactBadge = document.getElementById('impactBadge');
+    const diff = estimatedMid - toolData.currentScore;
+    if (diff > 0) {
+      impactBadge.className = 'impact-badge positive';
+      impactBadge.textContent = '+ ' + diff + ' pts Positive Impact';
+    } else if (diff < 0) {
+      impactBadge.className = 'impact-badge negative';
+      impactBadge.textContent = diff + ' pts Negative Impact';
+    } else {
+      impactBadge.className = 'impact-badge neutral';
+      impactBadge.textContent = 'Neutral Impact';
+    }
+
+    // Explanation
+    document.getElementById('explanationText').textContent = data.explanation || 'No explanation available.';
+
+    // Factors
+    const factorsList = document.getElementById('factorsList');
+    factorsList.innerHTML = '';
+    if (data.factors && data.factors.length) {
+      data.factors.forEach(function(factor) {
+        const li = document.createElement('li');
+        li.textContent = factor;
+        factorsList.appendChild(li);
+      });
+    }
+
+    // Recommendations
+    const recommendationsList = document.getElementById('recommendationsList');
+    recommendationsList.innerHTML = '';
+    if (data.recommendations && data.recommendations.length) {
+      data.recommendations.forEach(function(rec) {
+        const li = document.createElement('li');
+        li.textContent = rec;
+        recommendationsList.appendChild(li);
+      });
+    }
+
+    // Transition to Step 3
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.add('active');
+  }
+
+  // --- Email validation helper ---
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+</script>
+
+</body>
+</html>

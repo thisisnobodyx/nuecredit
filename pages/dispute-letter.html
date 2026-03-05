@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Dispute Letter Generator | nueCredit</title>
+  <meta name="description" content="Generate professional, bureau-ready dispute letters based on the Fair Credit Reporting Act. Free AI-powered tool from nueCredit.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/globals.css">
+  <style>
+    :root {
+      --g: #008601;
+      --gb: #00A651;
+      --bk: #0A0A0A;
+      --bg: #F5F7F4;
+      --wh: #FFFFFF;
+      --tx: #1A1A1A;
+      --tl: #5A5A5A;
+      --gm: #909090;
+      --border: #E8E8E8;
+      --r: 14px;
+      --r-lg: 20px;
+      --gold: #D4A017;
+      --d2: #222;
+    }
+
+    /* ── Hero ── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--bk) 0%, #0d1f0d 50%, #0a1a0a 100%);
+      padding: 100px 0 60px;
+      text-align: center;
+    }
+    .hero-center { max-width: 640px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex;
+      color: rgba(255,255,255,.5);
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 16px;
+      font-family: 'DM Sans', sans-serif;
+      transition: color .2s;
+    }
+    .back-link:hover { color: #fff; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(0,134,1,.1);
+      border: 1px solid rgba(0,134,1,.25);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gb);
+      margin-bottom: 20px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--gb);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    .page-hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .page-hero h1 span { color: var(--gb); }
+    .page-hero p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── Tool Section ── */
+    .tool-section {
+      padding: 60px 0 80px;
+      background: var(--bg);
+    }
+    .tool-card {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--wh);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+      padding: 36px;
+    }
+    .tool-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 4px;
+    }
+    .tool-card-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--tl);
+      margin-bottom: 28px;
+    }
+
+    /* ── Form Elements ── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--tx);
+    }
+    .form-input {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      background: var(--wh);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-input:focus {
+      border-color: var(--g);
+    }
+    .form-select {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      background: var(--wh);
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23909090' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    .form-select:focus {
+      border-color: var(--g);
+    }
+    .form-textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      background: var(--wh);
+      resize: vertical;
+      min-height: 120px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-textarea:focus {
+      border-color: var(--g);
+    }
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--g);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      margin-top: 8px;
+    }
+    .form-submit:hover { background: #007301; }
+    .form-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+    .form-error {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: #D32F2F;
+      margin-top: 2px;
+      display: none;
+    }
+    .form-error.show { display: block; }
+    .form-helper {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--gm);
+    }
+
+    /* ── Step Indicators ── */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .step-panel.slide-in {
+      display: block;
+      animation: slideIn .35s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Info Panel (Step 2) ── */
+    .info-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 4px;
+    }
+    .info-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--tl);
+      margin-bottom: 24px;
+    }
+    .info-secure {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--gm);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    /* ── Results (Step 3) ── */
+    .result-card {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--wh);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+      padding: 36px;
+    }
+    .branded-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .branded-header img { height: 28px; }
+    .branded-header span {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g);
+    }
+    .bureau-info {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--tl);
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+    .letter-display {
+      background: #FAFAFA;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 28px;
+      font-family: 'DM Sans', Georgia, serif;
+      font-size: 13.5px;
+      color: var(--tx);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .letter-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--bk);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-copy:hover { background: var(--d2); }
+    .btn-copy.copied { background: var(--g); }
+
+    .filing-tips {
+      background: rgba(0,134,1,.04);
+      border: 1px solid rgba(0,134,1,.12);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .filing-tips h4 {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--g);
+      margin-bottom: 10px;
+    }
+    .filing-tips ol {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filing-tips li {
+      font-size: 12px;
+      color: var(--tl);
+      line-height: 1.6;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .tips-section {
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: var(--bg);
+      border-radius: var(--r);
+    }
+    .tips-section h4 {
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 8px;
+    }
+    .tips-section ul {
+      list-style: disc;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .tips-section li {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--tl);
+      line-height: 1.6;
+    }
+
+    .disclaimer-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      color: var(--gm);
+      line-height: 1.6;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .result-cta {
+      background: linear-gradient(135deg, var(--bk) 0%, #1a2a1a 100%);
+      border-radius: var(--r-lg);
+      padding: 32px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .result-cta h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .result-cta p {
+      font-size: 14px;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 20px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .result-cta .btn-primary {
+      display: inline-flex;
+      padding: 12px 28px;
+      background: var(--g);
+      color: #fff;
+      border-radius: 10px;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .result-cta .btn-primary:hover { background: #007301; }
+
+    /* ── Loading Spinner ── */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .loading-state.active { display: block; }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--g);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tl);
+    }
+    .loading-state .loading-sub {
+      font-size: 12px;
+      color: var(--gm);
+      margin-top: 4px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-hero { padding: 90px 0 50px; }
+      .page-hero h1 { font-size: 34px; }
+      .tool-card, .result-card { margin-left: 16px; margin-right: 16px; padding: 28px; }
+    }
+    @media (max-width: 600px) {
+      .page-hero { padding: 80px 0 40px; }
+      .page-hero h1 { font-size: 28px; }
+      .page-hero p { font-size: 14px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .tool-card, .result-card { padding: 20px; margin-left: 10px; margin-right: 10px; }
+      .letter-display { padding: 18px; font-size: 12.5px; }
+      .result-cta { padding: 24px; }
+      .result-cta h3 { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+      <ul class="nav-links">
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="partners.html">Partners</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+        <a href="get-started.html" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+      </div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="how-it-works.html">How It Works</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
+    <a href="about.html">About</a>
+    <a href="partners.html">Partners</a>
+    <a href="tools.html">Tools</a>
+    <a href="contact.html">Contact</a>
+    <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="hero-center">
+        <a href="tools.html" class="back-link">&larr; Back to All Tools</a>
+        <div class="hero-badge"><div class="hero-badge-dot"></div>AI-Powered</div>
+        <h1>Dispute Letter <span>Generator.</span></h1>
+        <p>Generate professional, bureau-ready dispute letters based on the Fair Credit Reporting Act. Just fill in your dispute details and our AI handles the rest.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tool Section -->
+  <section class="tool-section">
+    <div class="container">
+
+      <!-- Step 1: Tool Form -->
+      <div id="step1" class="tool-card step-panel active">
+        <div class="tool-card-title">Dispute Details</div>
+        <div class="tool-card-sub">Tell us about the item you want to dispute on your credit report.</div>
+
+        <form id="disputeForm" onsubmit="return false;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="disputeType">Dispute Type *</label>
+              <select class="form-select" id="disputeType" required>
+                <option value="">Select dispute type...</option>
+                <option value="Late Payment">Late Payment</option>
+                <option value="Collection Account">Collection Account</option>
+                <option value="Charge-Off">Charge-Off</option>
+                <option value="Hard Inquiry">Hard Inquiry</option>
+                <option value="Identity Theft">Identity Theft</option>
+                <option value="Incorrect Balance">Incorrect Balance</option>
+                <option value="Account Not Mine">Account Not Mine</option>
+              </select>
+              <span class="form-error" id="errDisputeType">Please select a dispute type.</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="creditBureau">Credit Bureau *</label>
+              <select class="form-select" id="creditBureau" required>
+                <option value="">Select bureau...</option>
+                <option value="Equifax">Equifax</option>
+                <option value="Experian">Experian</option>
+                <option value="TransUnion">TransUnion</option>
+                <option value="All Three Bureaus">All Three Bureaus</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="creditorName">Creditor / Company Name</label>
+              <input class="form-input" type="text" id="creditorName" placeholder="e.g. Capital One">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="accountLast4">Account Number Last 4 Digits</label>
+              <input class="form-input" type="text" id="accountLast4" placeholder="e.g. 4829" maxlength="4" pattern="\d{0,4}" inputmode="numeric">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="disputeReason">Reason for Dispute *</label>
+            <textarea class="form-textarea" id="disputeReason" placeholder="Describe why this item is inaccurate, unfair, or unverifiable. Be as specific as possible..." required></textarea>
+            <span class="form-error" id="errReason">Please describe your reason for dispute.</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="additionalContext">Additional Context <span style="font-weight:400;color:var(--gm);">(optional)</span></label>
+            <textarea class="form-textarea" id="additionalContext" placeholder="Any supporting details, dates, or documentation you can reference..." style="min-height:80px;"></textarea>
+          </div>
+
+          <button type="button" class="form-submit" onclick="validateStep1()">Generate Letter &rarr;</button>
+        </form>
+      </div>
+
+      <!-- Step 2: Info Collection -->
+      <div id="step2" class="tool-card step-panel">
+        <div class="info-title">Get Your Free Dispute Letter</div>
+        <div class="info-sub">Enter your info below to receive your personalized dispute letter.</div>
+
+        <form id="infoForm" onsubmit="return false;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="firstName">First Name *</label>
+              <input class="form-input" type="text" id="firstName" placeholder="First name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lastName">Last Name *</label>
+              <input class="form-input" type="text" id="lastName" placeholder="Last name" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="email">Email *</label>
+              <input class="form-input" type="email" id="email" placeholder="you@email.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="phone">Phone *</label>
+              <input class="form-input" type="tel" id="phone" placeholder="(555) 123-4567" required>
+            </div>
+          </div>
+
+          <button type="button" class="form-submit" id="submitInfoBtn" onclick="submitInfo()">Get My Letter &rarr;</button>
+          <div class="info-secure">Your info is secure and never shared. &#x1F512;</div>
+        </form>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="tool-card loading-state">
+        <div class="spinner"></div>
+        <p>Generating your dispute letter...</p>
+        <p class="loading-sub">Our AI is crafting a personalized, FCRA-compliant letter for you.</p>
+      </div>
+
+      <!-- Step 3: Results -->
+      <div id="step3" class="step-panel">
+        <div class="result-card">
+          <div class="branded-header">
+            <img src="../images/nuecredit-logo.png" alt="nueCredit">
+            <span>nueCredit AI Dispute Letter</span>
+          </div>
+
+          <div class="bureau-info" id="bureauInfo"></div>
+
+          <div class="letter-display" id="letterText"></div>
+
+          <div class="letter-actions">
+            <button class="btn-copy" id="copyBtn" onclick="copyLetter()">&#x1F4CB; Copy to Clipboard</button>
+          </div>
+
+          <div class="filing-tips">
+            <h4>Filing Instructions</h4>
+            <ol>
+              <li>Copy the letter above and paste it into a word processor (Google Docs, Word, etc.).</li>
+              <li>Replace all placeholder fields (your name, address, SSN last 4, etc.) with your real information.</li>
+              <li>Print the letter, sign it by hand, and make a copy for your records.</li>
+              <li>Mail the letter via USPS Certified Mail with Return Receipt Requested to the appropriate bureau address.</li>
+              <li>The bureau has 30 days to investigate and respond under the FCRA. Keep your certified mail receipt as proof.</li>
+            </ol>
+          </div>
+
+          <div class="tips-section">
+            <h4>Tips for a Successful Dispute</h4>
+            <ul>
+              <li>Include copies (never originals) of any supporting documentation such as payment receipts, identity theft reports, or account statements.</li>
+              <li>Send separate letters for each item you are disputing &mdash; do not bundle multiple disputes into one letter.</li>
+              <li>Keep a detailed log of all correspondence dates, tracking numbers, and responses.</li>
+              <li>If the bureau does not respond within 30 days, the item must be removed from your report per FCRA Section 611.</li>
+              <li>Consider following up with the creditor directly (a &ldquo;goodwill&rdquo; or &ldquo;debt validation&rdquo; letter) for additional leverage.</li>
+            </ul>
+          </div>
+
+          <div class="disclaimer-text">
+            Disclaimer: This letter is generated by AI for informational and educational purposes only. It does not constitute legal advice. nueCredit is not a law firm and does not provide legal services. Consult a qualified attorney for legal guidance specific to your situation. Results may vary depending on individual circumstances and bureau policies.
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="result-cta">
+          <h3>Need Help With Multiple Disputes?</h3>
+          <p>Our experts handle the entire dispute process &mdash; from analysis to filing to follow-up. Let us do the heavy lifting.</p>
+          <a href="get-started.html" class="btn-primary">Get Professional Help &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+          <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="tools.html">AI Tools</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Services</div>
+          <ul class="footer-links">
+            <li><a href="get-started.html">Credit Restoration</a></li>
+            <li><a href="quick-fix.html">Quick Fix VIP</a></li>
+            <li><a href="score-simulator.html">Score Simulator</a></li>
+            <li><a href="dispute-letter.html">Dispute Letters</a></li>
+            <li><a href="report-analyzer.html">Report Analyzer</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Partners</div>
+          <ul class="footer-links">
+            <li><a href="partners.html">Become a Partner</a></li>
+            <li><a href="partners.html">Referral Program</a></li>
+            <li><a href="partners.html">Affiliate Portal</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">CROA Disclosure</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // Bureau addresses
+    var bureauAddresses = {
+      'Equifax': 'Equifax Information Services LLC, P.O. Box 740256, Atlanta, GA 30374',
+      'Experian': 'Experian, P.O. Box 4500, Allen, TX 75013',
+      'TransUnion': 'TransUnion LLC, Consumer Dispute Center, P.O. Box 2000, Chester, PA 19016',
+      'All Three Bureaus': 'Equifax, Experian & TransUnion (send to each bureau separately)'
+    };
+
+    // Stored form data
+    var toolData = {};
+
+    // Step 1 validation
+    function validateStep1() {
+      var valid = true;
+      var disputeType = document.getElementById('disputeType').value;
+      var reason = document.getElementById('disputeReason').value.trim();
+
+      // Reset errors
+      document.getElementById('errDisputeType').classList.remove('show');
+      document.getElementById('errReason').classList.remove('show');
+
+      if (!disputeType) {
+        document.getElementById('errDisputeType').classList.add('show');
+        valid = false;
+      }
+      if (!reason) {
+        document.getElementById('errReason').classList.add('show');
+        valid = false;
+      }
+
+      if (!valid) return;
+
+      // Store tool data
+      toolData = {
+        disputeType: disputeType,
+        creditBureau: document.getElementById('creditBureau').value || 'All Three Bureaus',
+        creditorName: document.getElementById('creditorName').value.trim(),
+        accountLast4: document.getElementById('accountLast4').value.trim(),
+        disputeReason: reason,
+        additionalContext: document.getElementById('additionalContext').value.trim()
+      };
+
+      // Transition to Step 2
+      document.getElementById('step1').classList.remove('active');
+      var step2 = document.getElementById('step2');
+      step2.classList.add('active', 'slide-in');
+      step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Step 2 submit
+    function submitInfo() {
+      var firstName = document.getElementById('firstName').value.trim();
+      var lastName = document.getElementById('lastName').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var phone = document.getElementById('phone').value.trim();
+
+      if (!firstName || !lastName || !email || !phone) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      var btn = document.getElementById('submitInfoBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      // Hide Step 2, show loading
+      document.getElementById('step2').classList.remove('active', 'slide-in');
+      var loading = document.getElementById('loadingState');
+      loading.classList.add('active');
+
+      // POST lead data
+      fetch('/api/tool-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          toolUsed: 'dispute'
+        })
+      }).catch(function() {});
+
+      // POST AI dispute letter
+      fetch('/api/ai/dispute-letter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          disputeType: toolData.disputeType,
+          creditBureau: toolData.creditBureau,
+          creditorName: toolData.creditorName,
+          accountLast4: toolData.accountLast4,
+          disputeReason: toolData.disputeReason,
+          additionalContext: toolData.additionalContext
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        showResults(data);
+      })
+      .catch(function() {
+        // Fallback: generate a template letter locally
+        showResults({ letter: generateFallbackLetter(firstName, lastName) });
+      });
+    }
+
+    // Show results
+    function showResults(data) {
+      var loading = document.getElementById('loadingState');
+      loading.classList.remove('active');
+
+      // Bureau info
+      var bureau = toolData.creditBureau;
+      var addr = bureauAddresses[bureau] || bureau;
+      document.getElementById('bureauInfo').innerHTML = '<strong>To:</strong> ' + bureau + ' &mdash; ' + addr;
+
+      // Letter text
+      document.getElementById('letterText').textContent = data.letter || data.content || 'Letter could not be generated. Please try again.';
+
+      // Show step 3
+      var step3 = document.getElementById('step3');
+      step3.classList.add('active', 'slide-in');
+      step3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Fallback letter generator
+    function generateFallbackLetter(firstName, lastName) {
+      var today = new Date();
+      var dateStr = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      var bureau = toolData.creditBureau;
+      var addr = bureauAddresses[bureau] || '';
+
+      var letter = dateStr + '\n\n';
+      letter += '[Your Full Name: ' + firstName + ' ' + lastName + ']\n';
+      letter += '[Your Address]\n';
+      letter += '[City, State, ZIP Code]\n';
+      letter += '[Your SSN Last 4: XXX-XX-XXXX]\n';
+      letter += '[Your Date of Birth]\n\n';
+      letter += bureau + '\n';
+      letter += addr + '\n\n';
+      letter += 'Re: Dispute of Inaccurate Information — ' + toolData.disputeType + '\n';
+      if (toolData.creditorName) {
+        letter += 'Creditor: ' + toolData.creditorName + '\n';
+      }
+      if (toolData.accountLast4) {
+        letter += 'Account Number (last 4): ****' + toolData.accountLast4 + '\n';
+      }
+      letter += '\nTo Whom It May Concern,\n\n';
+      letter += 'I am writing to formally dispute the following information on my credit report, which I believe to be inaccurate, incomplete, or unverifiable. I am exercising my rights under the Fair Credit Reporting Act (FCRA), 15 U.S.C. Section 1681, which requires that credit reporting agencies maintain accurate and complete information.\n\n';
+      letter += 'DISPUTED ITEM:\n';
+      letter += 'Type: ' + toolData.disputeType + '\n';
+      if (toolData.creditorName) {
+        letter += 'Creditor/Company: ' + toolData.creditorName + '\n';
+      }
+      if (toolData.accountLast4) {
+        letter += 'Account (last 4 digits): ' + toolData.accountLast4 + '\n';
+      }
+      letter += '\nREASON FOR DISPUTE:\n';
+      letter += toolData.disputeReason + '\n';
+      if (toolData.additionalContext) {
+        letter += '\nADDITIONAL CONTEXT:\n';
+        letter += toolData.additionalContext + '\n';
+      }
+      letter += '\nPursuant to FCRA Section 611 (15 U.S.C. Section 1681i), I am requesting that you investigate this disputed item within 30 days of receiving this letter. If the information cannot be verified, I request that it be removed from my credit report immediately.\n\n';
+      letter += 'Additionally, under FCRA Section 611(a)(5)(A), I request that you provide me with written notification of the results of your investigation, including a free copy of my updated credit report if any changes are made.\n\n';
+      letter += 'Please also provide me with the name, address, and telephone number of any information furnisher you contacted during your investigation, as required under FCRA Section 611(a)(7).\n\n';
+      letter += 'I have enclosed copies of supporting documentation for your review. Please investigate this matter and correct my credit report accordingly.\n\n';
+      letter += 'Sincerely,\n\n';
+      letter += '[Your Signature]\n';
+      letter += firstName + ' ' + lastName + '\n\n';
+      letter += 'Enclosures:\n';
+      letter += '- Copy of government-issued ID\n';
+      letter += '- Copy of proof of address (utility bill or bank statement)\n';
+      letter += '- Supporting documentation (if applicable)';
+
+      return letter;
+    }
+
+    // Copy to clipboard
+    function copyLetter() {
+      var text = document.getElementById('letterText').textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        var btn = document.getElementById('copyBtn');
+        btn.innerHTML = '&#x2713; Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.innerHTML = '&#x1F4CB; Copy to Clipboard';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Restrict account last 4 to digits only
+    document.getElementById('accountLast4').addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 4);
+    });
+  </script>
+
+</body>
+</html>

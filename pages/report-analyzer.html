@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Report Analyzer | nueCredit</title>
+  <link rel="stylesheet" href="../css/globals.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --g: #008601;
+      --gb: #00A651;
+      --bk: #0A0A0A;
+      --bg: #F5F7F4;
+      --wh: #FFFFFF;
+      --tx: #1A1A1A;
+      --tl: #5A5A5A;
+      --gm: #909090;
+      --border: #E8E8E8;
+      --r: 14px;
+      --r-lg: 20px;
+      --gold: #D4A017;
+    }
+
+    /* Back link */
+    .back-link {
+      color: rgba(255,255,255,.5);
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 16px;
+      display: inline-block;
+      transition: color .2s;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* Tool card */
+    .tool-card {
+      max-width: 640px;
+      margin: -40px auto 0;
+      position: relative;
+      z-index: 2;
+      background: var(--wh);
+      border-radius: var(--r-lg);
+      box-shadow: 0 8px 40px rgba(0,0,0,.08);
+      padding: 32px;
+    }
+    .tool-section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 16px;
+    }
+
+    /* File upload */
+    .file-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 14px;
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--bg);
+    }
+    .file-upload-area:hover,
+    .file-upload-area.dragover {
+      border-color: var(--g);
+      background: rgba(0,134,1,.04);
+    }
+    .file-upload-icon { font-size: 44px; margin-bottom: 12px; }
+    .file-upload-text { font-size: 15px; color: var(--tx); margin-bottom: 6px; }
+    .file-upload-text strong { font-weight: 600; }
+    .file-upload-hint { font-size: 12px; color: var(--tl); }
+    .file-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(0,134,1,.06);
+      border: 1px solid rgba(0,134,1,.15);
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .file-preview-info { display: flex; align-items: center; gap: 10px; }
+    .file-preview-name { font-size: 14px; font-weight: 600; color: var(--tx); }
+    .file-preview-size { font-size: 12px; color: var(--tl); }
+    .file-remove-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,.08);
+      color: var(--tx);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+    .file-remove-btn:hover { background: rgba(220,38,38,.12); color: #dc2626; }
+
+    .file-hidden { display: none; }
+
+    /* Notes textarea */
+    .tool-textarea {
+      width: 100%;
+      min-height: 80px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      resize: vertical;
+      transition: border-color .2s;
+      background: var(--wh);
+      margin-top: 16px;
+      box-sizing: border-box;
+    }
+    .tool-textarea:focus { outline: none; border-color: var(--g); }
+    .tool-textarea::placeholder { color: var(--gm); }
+    .tool-textarea-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tl);
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    /* Buttons */
+    .tool-btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .tool-btn-primary {
+      background: var(--g);
+      color: #fff;
+    }
+    .tool-btn-primary:hover { background: var(--gb); transform: translateY(-1px); }
+    .tool-btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; animation: fadeUp .4s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Info form (Step 2) */
+    .info-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+    .info-subtitle {
+      font-size: 14px;
+      color: var(--tl);
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--tl);
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--tx);
+      transition: border-color .2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus { outline: none; border-color: var(--g); }
+    .form-group input::placeholder { color: var(--gm); }
+    .secure-text {
+      font-size: 12px;
+      color: var(--gm);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* Loading state */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .loading-state.active { display: block; animation: fadeUp .4s ease; }
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--g);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+    .loading-subtext {
+      font-size: 13px;
+      color: var(--tl);
+    }
+
+    /* Error state */
+    .error-box {
+      display: none;
+      background: rgba(220,38,38,.06);
+      border: 1px solid rgba(220,38,38,.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #dc2626;
+    }
+    .error-box.active { display: block; }
+
+    /* Results (Step 3) */
+    .results-card {
+      max-width: 720px;
+      margin: -40px auto 0;
+      position: relative;
+      z-index: 2;
+      background: var(--wh);
+      border-radius: var(--r-lg);
+      box-shadow: 0 8px 40px rgba(0,0,0,.08);
+      padding: 32px;
+    }
+    .branded-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .branded-header img { height: 28px; }
+    .branded-header span {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g);
+    }
+
+    .analyzer-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .analyzer-stat {
+      text-align: center;
+      padding: 16px;
+      border-radius: var(--r);
+      background: var(--wh);
+      border: 1px solid var(--border);
+    }
+    .analyzer-stat-val {
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .analyzer-stat-val.bad { color: #dc2626; }
+    .analyzer-stat-val.warn { color: #b45309; }
+    .analyzer-stat-val.good { color: var(--g); }
+    .analyzer-stat-lbl { font-size: 11px; color: var(--gm); }
+
+    .result-section {
+      margin-bottom: 24px;
+    }
+    .result-section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .result-section-title .icon { font-size: 16px; }
+    .result-summary {
+      font-size: 14px;
+      color: var(--tl);
+      line-height: 1.7;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 10px;
+    }
+
+    .severity {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+    .severity.high { background: rgba(220,38,38,.1); color: #dc2626; }
+    .severity.medium { background: rgba(234,179,8,.12); color: #b45309; }
+    .severity.low { background: rgba(0,134,1,.1); color: var(--g); }
+
+    .neg-items { display: flex; flex-direction: column; gap: 8px; }
+    .neg-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--wh);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .neg-item .neg-name { flex: 1; font-weight: 600; color: var(--tx); }
+    .neg-item .neg-type { font-size: 11px; color: var(--gm); }
+
+    .opportunity-list, .quickwin-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .opportunity-list li, .quickwin-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--tl);
+      line-height: 1.5;
+    }
+    .opportunity-list li .bullet {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--g);
+      margin-top: 6px;
+    }
+    .quickwin-list li .bullet {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gb);
+      margin-top: 6px;
+    }
+    .likelihood {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .likelihood.high { background: rgba(0,134,1,.1); color: var(--g); }
+    .likelihood.medium { background: rgba(234,179,8,.12); color: #b45309; }
+    .likelihood.low { background: rgba(220,38,38,.08); color: #dc2626; }
+
+    .action-timeline {
+      display: flex;
+      flex-direction: column;
+      padding-left: 24px;
+      position: relative;
+    }
+    .action-timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+    .action-step {
+      padding: 12px 0;
+      position: relative;
+    }
+    .action-step::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 16px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--wh);
+      border: 2px solid var(--g);
+    }
+    .action-step:first-child::before { background: var(--g); }
+    .action-step-time {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--g);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 4px;
+    }
+    .action-step-text {
+      font-size: 13px;
+      color: var(--tl);
+      line-height: 1.6;
+    }
+
+    .result-disclaimer {
+      font-size: 11px;
+      color: var(--gm);
+      line-height: 1.6;
+      padding: 14px 16px;
+      background: var(--bg);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .result-cta {
+      background: linear-gradient(135deg, var(--bk) 0%, #1a2a1a 100%);
+      border-radius: var(--r-lg);
+      padding: 32px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .result-cta h3 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .result-cta p {
+      font-size: 14px;
+      color: rgba(255,255,255,.6);
+      margin-bottom: 20px;
+    }
+    .result-cta .btn-primary {
+      display: inline-flex;
+      padding: 13px 28px;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .analyzer-stats { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .analyzer-stats { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .tool-card, .results-card { margin-left: 12px; margin-right: 12px; padding: 22px; }
+      .neg-item { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+      <ul class="nav-links">
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="partners.html">Partners</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;">Log In</a>
+        <a href="get-started.html" class="btn btn-primary" style="padding:9px 20px;font-size:13px;">Get Started</a>
+      </div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="how-it-works.html">How It Works</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
+    <a href="about.html">About</a>
+    <a href="partners.html">Partners</a>
+    <a href="tools.html">Tools</a>
+    <a href="contact.html">Contact</a>
+    <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
+  </div>
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="hero-center">
+        <a href="tools.html" class="back-link">&larr; Back to All Tools</a>
+        <div class="hero-badge"><div class="hero-badge-dot"></div>AI-Powered</div>
+        <h1>Credit Report <span>Analyzer.</span></h1>
+        <p>Upload your credit report and our AI will identify negative items, dispute opportunities, and create a personalized action plan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1 & 2: Tool Card -->
+  <div id="toolCard" class="tool-card">
+    <!-- Step 1: Upload Form -->
+    <div id="step1" class="step-panel active">
+      <div class="tool-section-title">Upload Your Credit Report</div>
+      <div id="dropZone" class="file-upload-area">
+        <div class="file-upload-icon">&#128196;</div>
+        <div class="file-upload-text">Drop your credit report here or <strong>click to browse</strong></div>
+        <div class="file-upload-hint">Supports PDF, images (JPG, PNG), and HTML files</div>
+        <input type="file" id="fileInput" class="file-hidden" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.html,.htm">
+      </div>
+      <div id="filePreview" style="display:none;">
+        <div class="file-preview">
+          <div class="file-preview-info">
+            <span>&#128196;</span>
+            <span id="fileName" class="file-preview-name"></span>
+            <span id="fileSize" class="file-preview-size"></span>
+          </div>
+          <button class="file-remove-btn" id="removeFileBtn" title="Remove file">&times;</button>
+        </div>
+      </div>
+      <div class="tool-textarea-label">Additional Notes (optional)</div>
+      <textarea id="notesInput" class="tool-textarea" placeholder="Any context about your credit situation, specific concerns, or goals..."></textarea>
+      <div id="step1Error" class="error-box"></div>
+      <button id="analyzeBtn" class="tool-btn tool-btn-primary">Analyze Report &rarr;</button>
+    </div>
+
+    <!-- Step 2: Info Collection -->
+    <div id="step2" class="step-panel">
+      <div class="info-title">Get Your Free Analysis</div>
+      <div class="info-subtitle">Enter your info to receive your personalized credit report analysis.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" placeholder="Doe">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="john@example.com">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="(555) 123-4567">
+        </div>
+      </div>
+      <div id="step2Error" class="error-box"></div>
+      <button id="submitInfoBtn" class="tool-btn tool-btn-primary">Get My Analysis &rarr;</button>
+      <div class="secure-text">Your info is secure and never shared. &#128274;</div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loadingState" class="loading-state">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Analyzing Your Credit Report</div>
+      <div class="loading-subtext">Our AI is reviewing your report and generating personalized insights...</div>
+    </div>
+  </div>
+
+  <!-- Step 3: Results -->
+  <div id="resultsCard" class="results-card" style="display:none;">
+    <div class="branded-header">
+      <img src="../images/nuecredit-logo.png" alt="nueCredit">
+      <span>nueCredit Credit Report Analysis</span>
+    </div>
+
+    <div id="statsGrid" class="analyzer-stats"></div>
+
+    <div id="summarySection" class="result-section">
+      <div class="result-section-title"><span class="icon">&#128202;</span> Summary</div>
+      <div id="summaryContent" class="result-summary"></div>
+    </div>
+
+    <div id="negativeSection" class="result-section">
+      <div class="result-section-title"><span class="icon">&#9888;&#65039;</span> Negative Items</div>
+      <div id="negativeItems" class="neg-items"></div>
+    </div>
+
+    <div id="disputeSection" class="result-section">
+      <div class="result-section-title"><span class="icon">&#128221;</span> Dispute Opportunities</div>
+      <ul id="disputeList" class="opportunity-list"></ul>
+    </div>
+
+    <div id="quickWinSection" class="result-section">
+      <div class="result-section-title"><span class="icon">&#9889;</span> Quick Wins</div>
+      <ul id="quickWinList" class="quickwin-list"></ul>
+    </div>
+
+    <div id="timelineSection" class="result-section">
+      <div class="result-section-title"><span class="icon">&#128197;</span> Action Plan Timeline</div>
+      <div id="actionTimeline" class="action-timeline"></div>
+    </div>
+
+    <div class="result-disclaimer">
+      <strong>Disclaimer:</strong> This analysis is generated by AI and is for informational purposes only. It does not constitute legal or financial advice. Results may vary. Always consult with a qualified credit professional before making financial decisions.
+    </div>
+
+    <div class="result-cta">
+      <h3>Want Expert Credit Restoration?</h3>
+      <p>Our specialists will handle your disputes, negotiate with creditors, and guide you every step of the way.</p>
+      <a href="get-started.html" class="btn btn-primary">Start Your Journey &rarr;</a>
+    </div>
+  </div>
+
+  <div style="height:80px;"></div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+          <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="pricing.html">Pricing</a></li>
+            <li><a href="tools.html">AI Tools</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Services</div>
+          <ul class="footer-links">
+            <li><a href="get-started.html">Credit Restoration</a></li>
+            <li><a href="quick-fix.html">Quick Fix VIP</a></li>
+            <li><a href="score-simulator.html">Score Simulator</a></li>
+            <li><a href="dispute-letter.html">Dispute Letters</a></li>
+            <li><a href="report-analyzer.html">Report Analyzer</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Partners</div>
+          <ul class="footer-links">
+            <li><a href="partners.html">Become a Partner</a></li>
+            <li><a href="partners.html">Referral Program</a></li>
+            <li><a href="partners.html">Affiliate Portal</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2025 nueCredit. All rights reserved.</span>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">CROA Disclosure</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (function() {
+      // State
+      var uploadedFile = null;
+      var uploadedImages = [];
+      var extractedText = '';
+
+      // Elements
+      var dropZone = document.getElementById('dropZone');
+      var fileInput = document.getElementById('fileInput');
+      var filePreview = document.getElementById('filePreview');
+      var fileNameEl = document.getElementById('fileName');
+      var fileSizeEl = document.getElementById('fileSize');
+      var removeFileBtn = document.getElementById('removeFileBtn');
+      var notesInput = document.getElementById('notesInput');
+      var analyzeBtn = document.getElementById('analyzeBtn');
+      var step1 = document.getElementById('step1');
+      var step2 = document.getElementById('step2');
+      var loadingState = document.getElementById('loadingState');
+      var toolCard = document.getElementById('toolCard');
+      var resultsCard = document.getElementById('resultsCard');
+      var submitInfoBtn = document.getElementById('submitInfoBtn');
+      var step1Error = document.getElementById('step1Error');
+      var step2Error = document.getElementById('step2Error');
+
+      var ALLOWED_TYPES = [
+        'application/pdf',
+        'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+        'text/html'
+      ];
+      var ALLOWED_EXT = ['.pdf', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.html', '.htm'];
+      var MAX_SIZE = 20 * 1024 * 1024; // 20MB
+
+      // Drag and drop
+      dropZone.addEventListener('click', function() { fileInput.click(); });
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+      dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+      });
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          processFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files.length > 0) {
+          processFile(e.target.files[0]);
+        }
+      });
+
+      removeFileBtn.addEventListener('click', function() { removeFile(); });
+
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+
+      function getFileExt(name) {
+        var idx = name.lastIndexOf('.');
+        return idx >= 0 ? name.substring(idx).toLowerCase() : '';
+      }
+
+      function showError(el, msg) {
+        el.textContent = msg;
+        el.classList.add('active');
+      }
+      function hideError(el) {
+        el.textContent = '';
+        el.classList.remove('active');
+      }
+
+      function processFile(file) {
+        hideError(step1Error);
+
+        var ext = getFileExt(file.name);
+        if (ALLOWED_EXT.indexOf(ext) === -1) {
+          showError(step1Error, 'Unsupported file type. Please upload a PDF, image (JPG, PNG, GIF, WebP), or HTML file.');
+          return;
+        }
+        if (file.size > MAX_SIZE) {
+          showError(step1Error, 'File is too large. Maximum size is 20MB.');
+          return;
+        }
+
+        uploadedFile = file;
+        uploadedImages = [];
+        extractedText = '';
+
+        fileNameEl.textContent = file.name;
+        fileSizeEl.textContent = formatFileSize(file.size);
+        dropZone.style.display = 'none';
+        filePreview.style.display = 'block';
+
+        if (ext === '.pdf') {
+          processPDF(file);
+        } else if (['.png', '.jpg', '.jpeg', '.gif', '.webp'].indexOf(ext) !== -1) {
+          processImage(file);
+        } else if (ext === '.html' || ext === '.htm') {
+          processHTML(file);
+        }
+      }
+
+      async function processPDF(file) {
+        try {
+          var arrayBuf = await file.arrayBuffer();
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          var pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+          var textParts = [];
+          var maxPages = Math.min(pdf.numPages, 10);
+          for (var i = 1; i <= maxPages; i++) {
+            var page = await pdf.getPage(i);
+            var content = await page.getTextContent();
+            var pageText = content.items.map(function(item) { return item.str; }).join(' ');
+            if (pageText.trim()) textParts.push(pageText);
+            var viewport = page.getViewport({ scale: 1.5 });
+            var canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            var ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            uploadedImages.push(canvas.toDataURL('image/jpeg', 0.8));
+          }
+          extractedText = textParts.join('\n\n');
+        } catch (err) {
+          showError(step1Error, 'Error reading PDF. The file may be corrupted or password-protected.');
+          removeFile();
+        }
+      }
+
+      function processImage(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedImages.push(e.target.result);
+        };
+        reader.onerror = function() {
+          showError(step1Error, 'Error reading image file.');
+          removeFile();
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function processHTML(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(e.target.result, 'text/html');
+            extractedText = doc.body ? doc.body.textContent.replace(/\s+/g, ' ').trim() : '';
+          } catch (err) {
+            showError(step1Error, 'Error reading HTML file.');
+            removeFile();
+          }
+        };
+        reader.onerror = function() {
+          showError(step1Error, 'Error reading file.');
+          removeFile();
+        };
+        reader.readAsText(file);
+      }
+
+      function removeFile() {
+        uploadedFile = null;
+        uploadedImages = [];
+        extractedText = '';
+        fileInput.value = '';
+        dropZone.style.display = '';
+        filePreview.style.display = 'none';
+        hideError(step1Error);
+      }
+
+      // Step 1 -> Step 2
+      analyzeBtn.addEventListener('click', function() {
+        hideError(step1Error);
+        if (!uploadedFile) {
+          showError(step1Error, 'Please upload a credit report file to continue.');
+          return;
+        }
+        step1.classList.remove('active');
+        step2.classList.add('active');
+      });
+
+      // Step 2 -> Submit
+      submitInfoBtn.addEventListener('click', async function() {
+        hideError(step2Error);
+
+        var firstName = document.getElementById('firstName').value.trim();
+        var lastName = document.getElementById('lastName').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var phone = document.getElementById('phone').value.trim();
+
+        if (!firstName || !lastName) {
+          showError(step2Error, 'Please enter your first and last name.');
+          return;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          showError(step2Error, 'Please enter a valid email address.');
+          return;
+        }
+        if (!phone) {
+          showError(step2Error, 'Please enter your phone number.');
+          return;
+        }
+
+        // Show loading
+        step2.classList.remove('active');
+        loadingState.classList.add('active');
+        submitInfoBtn.disabled = true;
+
+        try {
+          // POST lead info
+          await fetch('/api/tool-lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              phone: phone,
+              toolUsed: 'analyzer'
+            })
+          });
+        } catch (e) {
+          // Lead capture failure is non-blocking
+        }
+
+        try {
+          // POST analysis request
+          var payload = {
+            images: uploadedImages,
+            reportText: extractedText,
+            notes: notesInput.value.trim(),
+            fileName: uploadedFile ? uploadedFile.name : ''
+          };
+
+          var resp = await fetch('/api/ai/report-analyzer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!resp.ok) throw new Error('Server error: ' + resp.status);
+
+          var data = await resp.json();
+          renderResults(data);
+        } catch (err) {
+          loadingState.classList.remove('active');
+          step2.classList.add('active');
+          submitInfoBtn.disabled = false;
+          showError(step2Error, 'Something went wrong. Please try again or contact support.');
+        }
+      });
+
+      function renderResults(data) {
+        loadingState.classList.remove('active');
+        toolCard.style.display = 'none';
+        resultsCard.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Stats grid
+        var stats = data.stats || {};
+        var negCount = stats.negativeItems || 0;
+        var dispCount = stats.disputeOpportunities || 0;
+        var qwCount = stats.quickWins || 0;
+        var totalCount = stats.totalAccounts || 0;
+
+        var statsGrid = document.getElementById('statsGrid');
+        statsGrid.innerHTML =
+          '<div class="analyzer-stat"><div class="analyzer-stat-val bad">' + negCount + '</div><div class="analyzer-stat-lbl">Negative Items</div></div>' +
+          '<div class="analyzer-stat"><div class="analyzer-stat-val warn">' + dispCount + '</div><div class="analyzer-stat-lbl">Dispute Opportunities</div></div>' +
+          '<div class="analyzer-stat"><div class="analyzer-stat-val good">' + qwCount + '</div><div class="analyzer-stat-lbl">Quick Wins</div></div>' +
+          '<div class="analyzer-stat"><div class="analyzer-stat-val good">' + totalCount + '</div><div class="analyzer-stat-lbl">Total Accounts</div></div>';
+
+        // Summary
+        var summaryContent = document.getElementById('summaryContent');
+        summaryContent.textContent = data.summary || 'No summary available.';
+
+        // Negative items
+        var negativeItems = document.getElementById('negativeItems');
+        negativeItems.innerHTML = '';
+        var negList = data.negativeItems || [];
+        if (negList.length === 0) {
+          document.getElementById('negativeSection').style.display = 'none';
+        } else {
+          document.getElementById('negativeSection').style.display = '';
+          negList.forEach(function(item) {
+            var severityClass = (item.severity || 'medium').toLowerCase();
+            var div = document.createElement('div');
+            div.className = 'neg-item';
+            div.innerHTML =
+              '<span class="neg-name">' + escapeHtml(item.name || item.account || 'Unknown') + '</span>' +
+              '<span class="neg-type">' + escapeHtml(item.type || '') + '</span>' +
+              '<span class="severity ' + severityClass + '">' + severityClass + '</span>';
+            negativeItems.appendChild(div);
+          });
+        }
+
+        // Dispute opportunities
+        var disputeList = document.getElementById('disputeList');
+        disputeList.innerHTML = '';
+        var disputes = data.disputeOpportunities || [];
+        if (disputes.length === 0) {
+          document.getElementById('disputeSection').style.display = 'none';
+        } else {
+          document.getElementById('disputeSection').style.display = '';
+          disputes.forEach(function(item) {
+            var li = document.createElement('li');
+            var likelihood = (item.likelihood || 'medium').toLowerCase();
+            li.innerHTML =
+              '<span class="bullet"></span>' +
+              '<span style="flex:1;">' + escapeHtml(typeof item === 'string' ? item : (item.description || item.text || '')) + '</span>' +
+              '<span class="likelihood ' + likelihood + '">' + likelihood + '</span>';
+            disputeList.appendChild(li);
+          });
+        }
+
+        // Quick wins
+        var quickWinList = document.getElementById('quickWinList');
+        quickWinList.innerHTML = '';
+        var quickWins = data.quickWins || [];
+        if (quickWins.length === 0) {
+          document.getElementById('quickWinSection').style.display = 'none';
+        } else {
+          document.getElementById('quickWinSection').style.display = '';
+          quickWins.forEach(function(item) {
+            var li = document.createElement('li');
+            li.innerHTML =
+              '<span class="bullet"></span>' +
+              '<span>' + escapeHtml(typeof item === 'string' ? item : (item.description || item.text || '')) + '</span>';
+            quickWinList.appendChild(li);
+          });
+        }
+
+        // Action plan timeline
+        var actionTimeline = document.getElementById('actionTimeline');
+        actionTimeline.innerHTML = '';
+        var timeline = data.actionPlan || data.timeline || [];
+        if (timeline.length === 0) {
+          document.getElementById('timelineSection').style.display = 'none';
+        } else {
+          document.getElementById('timelineSection').style.display = '';
+          timeline.forEach(function(step) {
+            var div = document.createElement('div');
+            div.className = 'action-step';
+            div.innerHTML =
+              '<div class="action-step-time">' + escapeHtml(step.timeframe || step.time || '') + '</div>' +
+              '<div class="action-step-text">' + escapeHtml(step.action || step.description || step.text || '') + '</div>';
+            actionTimeline.appendChild(div);
+          });
+        }
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>
