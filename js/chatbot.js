@@ -138,6 +138,7 @@
     }
     .nue-messages::-webkit-scrollbar { width: 4px; }
     .nue-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    .nue-messages { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 
     .nue-msg {
       max-width: 85%;
@@ -201,7 +202,7 @@
       border: 1px solid #E8E8E8;
       border-radius: 12px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
+      font-size: 16px;
       color: #1A1A1A;
       outline: none;
       transition: border-color .2s;
@@ -265,14 +266,21 @@
       .nue-panel {
         bottom: 0;
         right: 0;
+        left: 0;
+        top: 0;
         width: 100%;
         max-width: 100%;
-        height: 100%;
-        max-height: 100%;
+        height: 100dvh;
+        height: 100vh;
+        max-height: 100dvh;
+        max-height: -webkit-fill-available;
         border-radius: 0;
+        overflow: hidden;
       }
       .nue-bubble.open { display: none; }
-      .nue-header { padding: 16px; }
+      .nue-header { padding: 16px; flex-shrink: 0; }
+      .nue-messages { min-height: 0; }
+      .nue-input-area { flex-shrink: 0; }
       .nue-close-mobile {
         display: block !important;
         margin-left: auto;
@@ -408,6 +416,10 @@
     isOpen = !isOpen;
     bubble.classList.toggle('open', isOpen);
     panel.classList.toggle('open', isOpen);
+    /* Lock body scroll on mobile when chat is open */
+    if (window.innerWidth <= 500) {
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
     if (isOpen) {
       unreadDot.classList.remove('show');
       if (!welcomePlayed) playWelcome();
@@ -518,6 +530,21 @@
       sendMessage(inputEl.value);
     }
   });
+
+  /* ── Mobile keyboard resize fix ──────────── */
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      if (isOpen && window.innerWidth <= 500) {
+        panel.style.height = window.visualViewport.height + 'px';
+        scrollToBottom();
+      }
+    });
+    window.visualViewport.addEventListener('scroll', function () {
+      if (isOpen && window.innerWidth <= 500) {
+        panel.style.top = window.visualViewport.offsetTop + 'px';
+      }
+    });
+  }
 
   /* ── Auto-open after delay on first visit ── */
   var hasOpened = sessionStorage.getItem('nue_opened');
