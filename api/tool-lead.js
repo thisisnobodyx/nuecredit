@@ -1,5 +1,5 @@
 import { sendNotification } from './utils/send-email.js';
-import { sendLead } from './utils/zapier.js';
+import { sendLead, sendToSheet } from './utils/zapier.js';
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -49,6 +49,18 @@ export default async function handler(req, res) {
       email,
       phone: phone || '',
       notes: `Lead from nueCredit AI Tool: ${toolLabel}`,
+    });
+
+    /* Save to Google Sheets (if configured) */
+    await sendToSheet({
+      type: 'ai_tool_lead',
+      firstName,
+      lastName: lastName || '',
+      email,
+      phone: phone || '',
+      toolUsed: toolLabel,
+      date: new Date().toLocaleDateString('en-US'),
+      time: new Date().toLocaleTimeString('en-US'),
     });
 
     return res.status(200).json({ success: true });
