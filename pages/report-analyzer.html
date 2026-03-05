@@ -34,6 +34,12 @@
     }
     .back-link:hover { color: #fff; }
 
+    /* Tool wrapper section */
+    .tool-wrapper {
+      background: var(--bg);
+      padding: 0 0 80px;
+    }
+
     /* Tool card */
     .tool-card {
       max-width: 640px;
@@ -44,6 +50,7 @@
       border-radius: var(--r-lg);
       box-shadow: 0 8px 40px rgba(0,0,0,.08);
       padding: 32px;
+      min-height: 340px;
     }
     .tool-section-title {
       font-family: 'Sora', sans-serif;
@@ -259,7 +266,7 @@
     /* Results (Step 3) */
     .results-card {
       max-width: 720px;
-      margin: -40px auto 0;
+      margin: 0 auto;
       position: relative;
       z-index: 2;
       background: var(--wh);
@@ -543,6 +550,7 @@
     </div>
   </section>
 
+  <div class="tool-wrapper">
   <!-- Step 1 & 2: Tool Card -->
   <div id="toolCard" class="tool-card">
     <!-- Step 1: Upload Form -->
@@ -652,7 +660,7 @@
     </div>
   </div>
 
-  <div style="height:80px;"></div>
+  </div><!-- /.tool-wrapper -->
 
   <footer>
     <div class="container">
@@ -1084,5 +1092,6 @@
       }
     })();
   </script>
+<script src="../js/chatbot.js"></script>
 </body>
 </html>

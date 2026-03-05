@@ -57,3 +57,16 @@ export function sendPartner(data) {
     ...data,
   });
 }
+
+/**
+ * Send lead data to Google Sheets via webhook.
+ * Works with:
+ *  - Google Apps Script web app (doPost)
+ *  - Zapier "Catch Hook" → Google Sheets
+ *  - Make.com webhook → Google Sheets
+ *
+ * Set GOOGLE_SHEET_WEBHOOK in your environment variables.
+ */
+export function sendToSheet(data) {
+  return fireWebhook(process.env.GOOGLE_SHEET_WEBHOOK, data);
+}
