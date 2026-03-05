@@ -41,7 +41,9 @@
 /* Comparison section */
 .compare-section { background: var(--wh); }
 .compare-table { border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-top: 48px; }
-.compare-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; }
+.compare-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; align-items: center; }
+.compare-cell.vip-col { background: rgba(212,160,23,.04); }
+.compare-head .compare-cell.vip-col { background: linear-gradient(135deg, #111, #1a1a1a); color: var(--gold); }
 .compare-head { background: var(--bg); }
 .compare-head .compare-cell { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--tx); padding: 16px 20px; }
 .compare-head .compare-cell.hot-col { background: var(--bk); color: #fff; }
@@ -89,14 +91,14 @@
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-visual { display: none; }
-  .compare-row { grid-template-columns: 2fr 1fr 1fr 1fr; font-size: 12px; }
-  .compare-cell { padding: 12px 10px; font-size: 11px; }
+  .compare-row { grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; font-size: 12px; }
+  .compare-cell { padding: 12px 8px; font-size: 11px; }
   .guarantee-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
   .guarantee-grid { grid-template-columns: 1fr; }
-  .compare-row { grid-template-columns: 1.5fr 1fr 1fr 1fr; }
-  .compare-cell { padding: 10px 8px; font-size: 10px; }
+  .compare-row { grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr; }
+  .compare-cell { padding: 10px 6px; font-size: 9px; }
 }
 </style>
 </head>
@@ -108,6 +110,7 @@
     <ul class="nav-links">
       <li><a href="how-it-works.html">How It Works</a></li>
       <li><a href="pricing.html" class="active">Pricing</a></li>
+      <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="partners.html">Partners</a></li>
       <li><a href="blog.html">Blog</a></li>
@@ -123,6 +126,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="how-it-works.html">How It Works</a>
   <a href="pricing.html">Pricing</a>
+  <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
   <a href="about.html">About</a>
   <a href="partners.html">Partners</a>
   <a href="blog.html">Blog</a>
@@ -178,7 +182,7 @@
 <section class="section" id="plans" style="background:var(--bg);">
   <div class="container">
     <div class="section-header center reveal"><div class="eyebrow">Choose Your Plan</div><h2>Credit Repair That Fits Your Budget</h2><p>Every plan includes a client portal, progress tracking, and dedicated support.</p></div>
-    <div class="pricing-grid">
+    <div class="pricing-grid-4">
       <div class="price-card reveal reveal-delay-1">
         <div class="price-name">Basic</div>
         <div class="price-amount"><span class="price-num">$79</span><span class="price-per">/mo</span></div>
@@ -231,6 +235,24 @@
         </ul>
         <a href="#" class="price-btn">Get Started</a>
       </div>
+      <div class="price-card vip reveal reveal-delay-3">
+        <div class="price-pop vip-pop">⚡ VIP Express</div>
+        <div class="price-name">Quick Fix</div>
+        <div class="price-amount"><span class="price-num" style="font-size:32px;">Custom</span></div>
+        <div class="price-enroll">Quote based on your credit report</div>
+        <div class="price-divider"></div>
+        <ul class="price-feats">
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>2–4 week timeline</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>All 3 Bureaus</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Aggressive dispute strategy</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Dedicated VIP specialist</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Daily monitoring &amp; updates</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Tradeline implementation</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Priority phone support</li>
+          <li class="price-feat"><span class="price-feat-check yes">✓</span>Lender-ready completion report</li>
+        </ul>
+        <a href="quick-fix.html" class="price-btn">Request a Quote →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -244,66 +266,77 @@
         <div class="compare-cell" style="text-align:center;">Basic</div>
         <div class="compare-cell hot-col" style="text-align:center;">Pro</div>
         <div class="compare-cell" style="text-align:center;">Premium</div>
+        <div class="compare-cell vip-col" style="text-align:center;">Quick Fix</div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Bureau Coverage</div>
         <div class="compare-cell" style="text-align:center;">1 Bureau</div>
         <div class="compare-cell hot-col" style="text-align:center;">All 3</div>
         <div class="compare-cell" style="text-align:center;">All 3</div>
+        <div class="compare-cell vip-col" style="text-align:center;">All 3</div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Monthly Disputes</div>
         <div class="compare-cell" style="text-align:center;">Up to 5</div>
         <div class="compare-cell hot-col" style="text-align:center;">Up to 15</div>
         <div class="compare-cell" style="text-align:center;">Unlimited</div>
+        <div class="compare-cell vip-col" style="text-align:center;">Aggressive</div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Progress Reports</div>
         <div class="compare-cell" style="text-align:center;">Monthly</div>
         <div class="compare-cell hot-col" style="text-align:center;">Bi-weekly</div>
         <div class="compare-cell" style="text-align:center;">Weekly</div>
+        <div class="compare-cell vip-col" style="text-align:center;">Daily</div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Client Portal</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check">✓</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Score Chart Tracking</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check">✓</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Tradeline Strategy</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check">✓</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Debt Validation Letters</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check">✓</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check">✓</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">AI Credit Coach</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check no">—</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Dedicated Coach</div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell hot-col" style="text-align:center;"><span class="compare-check no">—</span></div>
         <div class="compare-cell" style="text-align:center;"><span class="compare-check">✓</span></div>
+        <div class="compare-cell vip-col" style="text-align:center;"><span class="compare-check">✓</span></div>
       </div>
       <div class="compare-row">
         <div class="compare-cell feature">Support</div>
         <div class="compare-cell" style="text-align:center;">Email</div>
         <div class="compare-cell hot-col" style="text-align:center;">Email + Chat</div>
         <div class="compare-cell" style="text-align:center;">Priority Phone</div>
+        <div class="compare-cell vip-col" style="text-align:center;">VIP Direct Line</div>
       </div>
     </div>
   </div>
@@ -364,6 +397,13 @@
         </div>
         <div class="faq-a"><div class="faq-a-inner">We don't offer money-back guarantees because credit repair is a process, not a one-time event. However, we never lock you in — cancel anytime if you're not satisfied with our service.</div></div>
       </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+          <span>What is Quick Fix and how is it different?</span>
+          <div class="faq-icon">+</div>
+        </div>
+        <div class="faq-a"><div class="faq-a-inner">Quick Fix is our VIP express service for clients who need credit restored in 2–4 weeks. Unlike monthly subscription plans, Quick Fix is a one-time service with custom pricing based on your credit report. It's ideal for people who need fast results for a mortgage, car loan, or other time-sensitive credit need. <a href="quick-fix.html" style="color:var(--g);font-weight:600;">Learn more →</a></div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -408,6 +448,7 @@
           <li><a href="#">Basic Plan</a></li>
           <li><a href="#">Pro Plan</a></li>
           <li><a href="#">Premium Plan</a></li>
+          <li><a href="quick-fix.html">Quick Fix (VIP)</a></li>
         </ul>
       </div>
       <div>

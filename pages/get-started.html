@@ -72,6 +72,11 @@
 .plan-price-tag { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; color: var(--g); letter-spacing: -1px; flex-shrink: 0; }
 .plan-price-per { font-size: 13px; color: var(--gm); font-weight: 400; }
 .plan-popular { position: absolute; top: -10px; right: 16px; background: var(--g); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: .5px; }
+.plan-option.vip-plan { border-color: rgba(212,160,23,.25); }
+.plan-option.vip-plan:hover { border-color: rgba(212,160,23,.5); background: rgba(212,160,23,.02); }
+.plan-option.vip-plan.selected { border-color: var(--gold); background: rgba(212,160,23,.05); }
+.plan-option.vip-plan.selected .plan-radio { border-color: var(--gold); background: var(--gold); }
+.plan-option.vip-plan .plan-popular { background: linear-gradient(90deg, var(--gold-d), var(--gold)); color: #111; }
 
 /* Order summary */
 .order-summary { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
@@ -123,9 +128,9 @@
     <ul class="nav-links">
       <li><a href="how-it-works.html">How It Works</a></li>
       <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="quick-fix.html" class="nav-vip">Quick Fix</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="partners.html">Partners</a></li>
-      <li><a href="blog.html">Blog</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-cta">
@@ -138,9 +143,9 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="how-it-works.html">How It Works</a>
   <a href="pricing.html">Pricing</a>
+  <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
   <a href="about.html">About</a>
   <a href="partners.html">Partners</a>
-  <a href="blog.html">Blog</a>
   <a href="contact.html">Contact</a>
   <a href="get-started.html" class="btn btn-primary" style="margin-top:12px;justify-content:center;">Get Started</a>
 </div>
@@ -232,12 +237,21 @@
               </div>
               <div class="plan-price-tag">$249<span class="plan-price-per">/mo</span></div>
             </div>
+            <div class="plan-option vip-plan" onclick="selectPlan(this, 'quickfix', 0, 0)">
+              <div class="plan-popular">⚡ VIP Express</div>
+              <div class="plan-radio"></div>
+              <div class="plan-details">
+                <div class="plan-name">Quick Fix</div>
+                <div class="plan-desc">2–4 week express service, all 3 bureaus, dedicated VIP specialist</div>
+              </div>
+              <div class="plan-price-tag" style="color:var(--gold);font-size:16px;font-weight:700;">Request a Quote</div>
+            </div>
           </div>
 
           <div class="order-summary" id="orderSummary">
-            <div class="order-row"><span class="order-label">Monthly subscription</span><span class="order-val" id="sumMonthly">$149/mo</span></div>
-            <div class="order-row"><span class="order-label">One-time enrollment fee</span><span class="order-val" id="sumEnroll">$149</span></div>
-            <div class="order-row total"><span>Due today</span><span id="sumTotal">$298</span></div>
+            <div class="order-row"><span class="order-label" id="sumMonthlyLabel">Monthly subscription</span><span class="order-val" id="sumMonthly">$149/mo</span></div>
+            <div class="order-row"><span class="order-label" id="sumEnrollLabel">One-time enrollment fee</span><span class="order-val" id="sumEnroll">$149</span></div>
+            <div class="order-row total"><span id="sumTotalLabel">Due today</span><span id="sumTotal">$298</span></div>
           </div>
 
           <div class="wizard-actions">
@@ -320,6 +334,7 @@
           <li><a href="#">Basic Plan</a></li>
           <li><a href="#">Pro Plan</a></li>
           <li><a href="#">Premium Plan</a></li>
+          <li><a href="quick-fix.html">Quick Fix (VIP)</a></li>
         </ul>
       </div>
       <div>
@@ -377,9 +392,22 @@ function selectPlan(el, name, monthly, enroll) {
   document.querySelectorAll('.plan-option').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
   selectedPlan = { name, monthly, enroll };
-  document.getElementById('sumMonthly').textContent = '$' + monthly + '/mo';
-  document.getElementById('sumEnroll').textContent = '$' + enroll;
-  document.getElementById('sumTotal').textContent = '$' + (monthly + enroll);
+
+  if (name === 'quickfix') {
+    document.getElementById('sumMonthlyLabel').textContent = 'Service type';
+    document.getElementById('sumMonthly').textContent = 'Quick Fix (VIP)';
+    document.getElementById('sumEnrollLabel').textContent = 'Pricing';
+    document.getElementById('sumEnroll').textContent = 'Custom quote';
+    document.getElementById('sumTotalLabel').textContent = 'Due today';
+    document.getElementById('sumTotal').textContent = 'To be determined';
+  } else {
+    document.getElementById('sumMonthlyLabel').textContent = 'Monthly subscription';
+    document.getElementById('sumMonthly').textContent = '$' + monthly + '/mo';
+    document.getElementById('sumEnrollLabel').textContent = 'One-time enrollment fee';
+    document.getElementById('sumEnroll').textContent = '$' + enroll;
+    document.getElementById('sumTotalLabel').textContent = 'Due today';
+    document.getElementById('sumTotal').textContent = '$' + (monthly + enroll);
+  }
 }
 
 function submitForm() {
@@ -390,7 +418,11 @@ function submitForm() {
     alert('Please accept all agreements to continue.');
     return;
   }
-  alert('Thank you! Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours.');
+  if (selectedPlan.name === 'quickfix') {
+    alert('Thank you! Your Quick Fix request has been submitted. A VIP specialist will review your credit report and contact you within 24 hours with a custom quote.');
+  } else {
+    alert('Thank you! Your enrollment has been submitted. A nueCredit specialist will reach out within 24 hours.');
+  }
 }
 </script>
 </body>

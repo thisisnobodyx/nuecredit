@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Fix VIP — nueCredit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="../css/globals.css">
+<style>
+.page-hero { background: var(--bk) url('../images/hero-bg.png') center/cover no-repeat; padding: 140px 0 80px; position: relative; overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.page-hero h1 { font-size: clamp(36px,5vw,60px); font-weight:800; color:#fff; letter-spacing:-2.5px; line-height:1.05; margin-bottom:18px; }
+.page-hero h1 span { color:var(--gold); }
+.page-hero p { font-size:18px; color:rgba(255,255,255,.45); line-height:1.72; max-width:560px; margin-bottom:36px; }
+.page-hero .hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(212,160,23,.1); border:1px solid rgba(212,160,23,.22); color:var(--gold); font-size:12px; font-weight:600; padding:6px 14px; border-radius:100px; margin-bottom:24px; }
+.page-hero .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.6;transform:scale(1.3); } }
+
+/* Hero visual — floating VIP cards */
+.hero-visual { position: relative; min-height: 360px; }
+.hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(212,160,23,.15) 0%, transparent 70%); filter: blur(40px); pointer-events: none; }
+.vip-float {
+  position: absolute; display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(212,160,23,.15);
+  border-radius: 14px; padding: 16px 20px; backdrop-filter: blur(10px);
+  animation: vipFloat 6s ease-in-out infinite; width: max-content;
+}
+.vip-float:nth-child(2) { top: 0; left: 0; animation-delay: 0s; }
+.vip-float:nth-child(3) { top: 30%; right: 0; animation-delay: -1.5s; }
+.vip-float:nth-child(4) { top: 60%; left: 5%; animation-delay: -3s; }
+.vip-float:nth-child(5) { bottom: 0; right: 10%; animation-delay: -4.5s; }
+@keyframes vipFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.vip-float-icon {
+  width: 36px; height: 36px; border-radius: 10px; background: rgba(212,160,23,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.vip-float-text { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7); }
+.vip-float-val { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 800; color: var(--gold); }
+
+/* Steps */
+.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.step-card { background: var(--wh); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px; text-align: center; transition: all .25s; position: relative; }
+.step-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: rgba(212,160,23,.3); }
+.step-num { width: 48px; height: 48px; border-radius: 50%; background: rgba(212,160,23,.1); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 800; color: var(--gold); margin: 0 auto 18px; }
+.step-card h3 { font-size: 17px; font-weight: 700; color: var(--tx); margin-bottom: 9px; }
+.step-card p { font-size: 14px; color: var(--tl); line-height: 1.65; }
+
+/* Includes grid */
+.includes-section { background: var(--bk); }
+.includes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.include-card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); border-radius: 14px; padding: 24px; transition: all .2s; }
+.include-card:hover { background: rgba(255,255,255,.06); border-color: rgba(212,160,23,.2); }
+.include-icon { font-size: 28px; margin-bottom: 12px; }
+.include-card h4 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.include-card p { font-size: 12px; color: rgba(255,255,255,.35); line-height: 1.6; }
+
+/* Who section */
+.who-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.who-card { background: var(--wh); border: 1px solid var(--border); border-radius: var(--r); padding: 24px; display: flex; gap: 16px; align-items: flex-start; transition: all .25s; }
+.who-card:hover { box-shadow: var(--shadow); border-color: rgba(212,160,23,.3); }
+.who-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(212,160,23,.08); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.who-card h4 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--tx); margin-bottom: 5px; }
+.who-card p { font-size: 13px; color: var(--tl); line-height: 1.6; }
+
+/* FAQ */
+.faq-item { border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 8px; overflow: hidden; transition: all .2s; }
+.faq-item:hover { border-color: rgba(0,134,1,.2); }
+.faq-q { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; cursor: pointer; font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; color: var(--tx); }
+.faq-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--gm); transition: all .2s; flex-shrink: 0; }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s; }
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--g); color: #fff; }
+.faq-a-inner { padding: 0 22px 18px; font-size: 14px; color: var(--tl); line-height: 1.72; }
+
+/* VIP CTA banner */
+.vip-cta { background: linear-gradient(135deg, #1a1200 0%, #3d2e00 50%, #1a1200 100%); position: relative; overflow: hidden; }
+.vip-cta::before { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(212,160,23,.12) 0%, transparent 70%); }
+.vip-cta h2 { font-size: clamp(30px,4.5vw,52px); font-weight: 800; color: #fff; letter-spacing: -2px; margin-bottom: 14px; }
+.vip-cta p { font-size: 17px; color: rgba(255,255,255,.5); margin-bottom: 32px; }
+.btn-gold { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 700; }
+.btn-gold:hover { background: var(--gold-d); border-color: var(--gold-d); color: #fff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,160,23,.3); }
+
+/* Stats bar gold */
+.stats-bar.gold { background: linear-gradient(135deg, #8B6914 0%, var(--gold) 100%); }
+
+@media (max-width:900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .includes-grid { grid-template-columns: 1fr 1fr; }
+  .who-grid { grid-template-columns: 1fr; }
+}
+@media (max-width:600px) {
+  .includes-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+    <ul class="nav-links">
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="quick-fix.html" class="nav-vip active">Quick Fix</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="partners.html">Partners</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="get-started.html" class="btn btn-primary">Get Started</a>
+    </div>
+    <div class="hamburger" onclick="document.querySelector('.mobile-menu').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="how-it-works.html">How It Works</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="quick-fix.html" style="color:var(--gold);">Quick Fix ⚡</a>
+  <a href="about.html">About</a>
+  <a href="partners.html">Partners</a>
+  <a href="contact.html">Contact</a>
+  <a href="get-started.html" class="btn btn-primary" style="text-align:center;margin-top:8px;">Get Started</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge"><span class="hero-badge-dot"></span> VIP Express Service</div>
+        <h1>Credit Fixed Fast.<br><span>2–4 Weeks.</span></h1>
+        <p>For clients who can't wait. Whether you need a mortgage, car loan, or business credit — our Quick Fix VIP service delivers aggressive credit restoration on an accelerated timeline.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a href="get-started.html" class="btn btn-gold btn-lg">Request a Quote →</a>
+          <a href="#how-it-works" class="btn btn-ghost btn-lg">See How It Works</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-glow"></div>
+        <div class="vip-float"><div class="vip-float-icon">⚡</div><div><div class="vip-float-text">Timeline</div><div class="vip-float-val">2–4 Weeks</div></div></div>
+        <div class="vip-float"><div class="vip-float-icon">📊</div><div><div class="vip-float-text">Coverage</div><div class="vip-float-val">All 3 Bureaus</div></div></div>
+        <div class="vip-float"><div class="vip-float-icon">👤</div><div><div class="vip-float-text">Support</div><div class="vip-float-val">Dedicated VIP</div></div></div>
+        <div class="vip-float"><div class="vip-float-icon">💰</div><div><div class="vip-float-text">Payment</div><div class="vip-float-val">Upfront or 2x</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar gold">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-item"><span class="stat-val">2–4</span><span class="stat-lbl">Week Timeline</span></div>
+      <div class="stat-item"><span class="stat-val">All 3</span><span class="stat-lbl">Bureau Coverage</span></div>
+      <div class="stat-item"><span class="stat-val">1-on-1</span><span class="stat-lbl">Dedicated Specialist</span></div>
+      <div class="stat-item"><span class="stat-val">100%</span><span class="stat-lbl">Upfront or 2 Payments</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow" style="color:var(--gold);"><span style="background:var(--gold);width:18px;height:2px;border-radius:2px;display:block;"></span> The Process</div>
+      <h2>How Quick Fix Works</h2>
+      <p>Three simple steps to fast-track your credit restoration.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <h3>Submit Your Info</h3>
+        <p>Fill out our Quick Fix request form with your details and current credit situation. Takes less than 5 minutes.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-num">2</div>
+        <h3>We Review &amp; Quote</h3>
+        <p>Our VIP team reviews your credit report from all 3 bureaus and provides a custom quote based on what needs to be fixed.</p>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-num">3</div>
+        <h3>Pay &amp; We Get to Work</h3>
+        <p>Pay the quote upfront or split into 2 payments. Our team immediately begins an aggressive dispute strategy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S INCLUDED -->
+<section class="section includes-section">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow light" style="color:var(--gold);">Included</div>
+      <h2 style="color:#fff;">Everything You Get</h2>
+      <p style="color:rgba(255,255,255,.4);">Quick Fix includes our most comprehensive credit restoration toolkit.</p>
+    </div>
+    <div class="includes-grid">
+      <div class="include-card reveal">
+        <div class="include-icon">📊</div>
+        <h4>All 3 Bureau Coverage</h4>
+        <p>Full dispute coverage across Equifax, Experian, and TransUnion simultaneously.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-1">
+        <div class="include-icon">⚡</div>
+        <h4>Aggressive Disputes</h4>
+        <p>Expedited, high-volume dispute strategy designed for the fastest possible results.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-2">
+        <div class="include-icon">👤</div>
+        <h4>Dedicated VIP Specialist</h4>
+        <p>Your own credit specialist with direct phone line — no queues, no transfers.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-3">
+        <div class="include-icon">📈</div>
+        <h4>Daily Monitoring</h4>
+        <p>Real-time updates on dispute progress and score changes every day.</p>
+      </div>
+      <div class="include-card reveal">
+        <div class="include-icon">📋</div>
+        <h4>Tradeline Strategy</h4>
+        <p>Strategic tradeline recommendations and implementation to boost your profile.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-1">
+        <div class="include-icon">📞</div>
+        <h4>Priority Phone Support</h4>
+        <p>Direct line to your specialist. Get answers when you need them, not tomorrow.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-2">
+        <div class="include-icon">🗺️</div>
+        <h4>Custom Credit Plan</h4>
+        <p>Personalized credit rebuilding roadmap tailored to your specific goals and timeline.</p>
+      </div>
+      <div class="include-card reveal reveal-delay-3">
+        <div class="include-icon">📄</div>
+        <h4>Lender-Ready Report</h4>
+        <p>Completion report you can present to your lender to fast-track loan approval.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO THIS IS FOR -->
+<section class="section" style="background:var(--bg);">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="eyebrow" style="color:var(--gold);"><span style="background:var(--gold);width:18px;height:2px;border-radius:2px;display:block;"></span> Ideal For</div>
+      <h2>Who Quick Fix Is For</h2>
+      <p>If time is a factor and you need credit results fast, Quick Fix was built for you.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card reveal">
+        <div class="who-icon">🏠</div>
+        <div><h4>Mortgage Applicants</h4><p>Need to qualify for a home loan? We'll get your credit lender-ready in weeks, not months.</p></div>
+      </div>
+      <div class="who-card reveal reveal-delay-1">
+        <div class="who-icon">🚗</div>
+        <div><h4>Car Buyers</h4><p>Denied financing or offered high rates? Fix your credit fast and get the deal you deserve.</p></div>
+      </div>
+      <div class="who-card reveal reveal-delay-2">
+        <div class="who-icon">💼</div>
+        <div><h4>Business Owners</h4><p>Need a business loan or line of credit? Clean up your personal credit to qualify faster.</p></div>
+      </div>
+      <div class="who-card reveal reveal-delay-3">
+        <div class="who-icon">⏰</div>
+        <div><h4>Time-Sensitive Needs</h4><p>Any situation where waiting months isn't an option. We move fast because you need to.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header center reveal">
+      <h2>Quick Fix FAQ</h2>
+      <p>Common questions about our VIP express service.</p>
+    </div>
+    <div style="max-width:720px;margin:0 auto;">
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How fast is Quick Fix?</span><div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Most Quick Fix cases are completed within 2–4 weeks. The exact timeline depends on the complexity of your credit report and the number of items that need to be addressed.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>How much does Quick Fix cost?</span><div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Quick Fix pricing is custom — we review your credit report and provide a quote based on the work needed. Every case is different, so we tailor the price to your specific situation.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-2">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Can I pay in installments?</span><div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes. You can pay the full quote upfront or split it into 2 payments. The first payment is due before work begins, and the second is due at the midpoint of your case.</div></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>What's the difference between Quick Fix and monthly plans?</span><div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Our monthly plans are ongoing subscription-based services for gradual credit improvement. Quick Fix is a one-time, accelerated service with a dedicated VIP specialist and aggressive dispute strategy — designed to deliver results in 2–4 weeks instead of months.</div></div>
+      </div>
+      <div class="faq-item reveal reveal-delay-1">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Do you guarantee results?</span><div class="faq-icon">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner">Per the Credit Repair Organizations Act (CROA), no credit repair company can guarantee specific results. However, our Quick Fix service uses the most aggressive dispute strategies available, and our VIP team has extensive experience delivering fast results.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section vip-cta">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>Need Your Credit<br>Fixed Now?</h2>
+      <p>Request a free quote and see how Quick Fix can help you reach your goals faster.</p>
+      <a href="get-started.html" class="btn btn-gold btn-lg">Request a Quote →</a>
+      <div class="cta-trust" style="margin-top:28px;">
+        <span class="cta-trust-item">🔒 256-bit Encryption</span>
+        <span class="cta-trust-item">⚖️ CROA Compliant</span>
+        <span class="cta-trust-item">⚡ 2-4 Week Results</span>
+        <span class="cta-trust-item">🇺🇸 US-Based Team</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="../index.html" class="footer-logo"><img src="../images/nuecredit-logo.png" alt="nueCredit"></a>
+        <p class="footer-tagline">Professional credit restoration for everyday Americans. CROA compliant. Results-driven.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="partners.html">Partner Program</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Services</div>
+        <ul class="footer-links">
+          <li><a href="pricing.html">Basic Plan</a></li>
+          <li><a href="pricing.html">Pro Plan</a></li>
+          <li><a href="pricing.html">Premium Plan</a></li>
+          <li><a href="quick-fix.html">Quick Fix (VIP)</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Partners</div>
+        <ul class="footer-links">
+          <li><a href="partners.html">Partner Program</a></li>
+          <li><a href="partners.html">Apply Now</a></li>
+          <li><a href="partners.html">Commission Rates</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 nueCredit. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">CROA Disclosure</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
