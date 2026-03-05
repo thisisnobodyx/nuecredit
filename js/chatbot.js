@@ -469,11 +469,22 @@
       .then(function (data) {
         typing.remove();
         var reply = data.reply || data.error || "Sorry, I couldn't process that. Try again!";
-        appendMessage('bot', reply);
         history.push({ role: 'assistant', content: reply });
-        isSending = false;
-        sendBtn.disabled = false;
-        inputEl.focus();
+
+        /* Split into multiple bubbles on --- separator */
+        var bubbles = reply.split(/\n*---\n*/).filter(function (b) { return b.trim(); });
+        if (bubbles.length <= 1) {
+          appendMessage('bot', reply);
+          isSending = false;
+          sendBtn.disabled = false;
+          inputEl.focus();
+        } else {
+          showBubblesStaggered(bubbles, function () {
+            isSending = false;
+            sendBtn.disabled = false;
+            inputEl.focus();
+          });
+        }
       })
       .catch(function () {
         typing.remove();
@@ -485,6 +496,33 @@
         isSending = false;
         sendBtn.disabled = false;
       });
+  }
+
+  /* ── Staggered Bot Bubbles ──────────────── */
+  function showBubblesStaggered(bubbles, done) {
+    var i = 0;
+    function next() {
+      if (i >= bubbles.length) { done(); return; }
+      /* Show typing */
+      var t = document.createElement('div');
+      t.className = 'nue-typing show';
+      t.innerHTML = '<span></span><span></span><span></span>';
+      messagesEl.appendChild(t);
+      scrollToBottom();
+      /* Replace with message after delay */
+      var delay = Math.min(600 + bubbles[i].length * 12, 1400);
+      setTimeout(function () {
+        t.remove();
+        appendMessage('bot', bubbles[i]);
+        i++;
+        if (i < bubbles.length) {
+          setTimeout(next, 200);
+        } else {
+          done();
+        }
+      }, delay);
+    }
+    next();
   }
 
   /* ── Append Message ───────────────────────── */
