@@ -73,6 +73,45 @@
 }
 .tool-form-wrap.on-white { background: var(--wh); border-color: var(--border); }
 
+/* File upload */
+.file-upload-area {
+  border: 2px dashed var(--border); border-radius: 14px; padding: 40px 24px;
+  text-align: center; cursor: pointer; transition: all .25s ease;
+  background: var(--bg); position: relative;
+}
+.file-upload-area:hover, .file-upload-area.dragover {
+  border-color: var(--g); background: rgba(0,134,1,.04);
+}
+.file-upload-area.dragover { transform: scale(1.01); }
+.file-upload-icon { font-size: 44px; margin-bottom: 12px; }
+.file-upload-text { font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--tx); margin-bottom: 6px; }
+.file-upload-text strong { font-weight: 600; }
+.file-upload-hint { font-size: 12px; color: var(--tl); }
+.file-preview {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: rgba(0,134,1,.06); border: 1px solid rgba(0,134,1,.15);
+  border-radius: 10px; margin-top: 10px;
+}
+.file-preview-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.file-preview-icon { font-size: 20px; flex-shrink: 0; }
+.file-preview-name {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  color: var(--tx); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.file-preview-size { font-size: 12px; color: var(--tl); flex-shrink: 0; }
+.file-remove-btn {
+  width: 28px; height: 28px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,.08); color: var(--tx); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .2s; flex-shrink: 0;
+}
+.file-remove-btn:hover { background: rgba(220,38,38,.12); color: #dc2626; }
+.file-processing {
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+  background: rgba(0,134,1,.06); border-radius: 10px; margin-top: 10px;
+  font-size: 13px; color: var(--tl);
+}
+
 /* Results shared */
 .result-area { display: none; margin-top: 32px; }
 .result-area.visible { display: block; animation: fadeInResult .5s ease; }
@@ -468,12 +507,31 @@
     <div class="section-header center reveal">
       <div class="eyebrow">Tool #3</div>
       <h2>Credit Report Analyzer</h2>
-      <p>Paste your credit report information below and our AI will identify negative items, dispute opportunities, and quick wins.</p>
+      <p>Upload your credit report and our AI will identify negative items, dispute opportunities, and quick wins.</p>
     </div>
     <div class="tool-form-wrap on-white reveal">
       <div class="form-group">
-        <label class="form-label">Credit Report Data</label>
-        <textarea class="form-textarea" placeholder="Paste your credit report information here. Include account names, statuses, balances, payment history, and any negative remarks..." id="arReport" style="min-height:200px;"></textarea>
+        <label class="form-label">Upload Credit Report</label>
+        <div class="file-upload-area" id="arDropZone" onclick="document.getElementById('arFileInput').click()">
+          <input type="file" id="arFileInput" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.html,.htm" style="display:none;" onchange="handleFileSelect(event)">
+          <div class="file-upload-icon" id="arUploadIcon">📄</div>
+          <div class="file-upload-text" id="arUploadText">
+            <strong>Drop your credit report here</strong> or click to browse
+          </div>
+          <div class="file-upload-hint" id="arUploadHint">Supports PDF, images (JPG, PNG), and HTML files</div>
+        </div>
+        <div class="file-preview" id="arFilePreview" style="display:none;">
+          <div class="file-preview-info">
+            <span class="file-preview-icon">📎</span>
+            <span class="file-preview-name" id="arFileName"></span>
+            <span class="file-preview-size" id="arFileSize"></span>
+          </div>
+          <button class="file-remove-btn" onclick="removeFile()" title="Remove file">✕</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Additional Notes <span style="font-weight:400;color:var(--tl);">(optional)</span></label>
+        <textarea class="form-textarea" placeholder="Any extra context — e.g. which bureau this is from, specific accounts you're concerned about..." id="arNotes" style="min-height:80px;"></textarea>
       </div>
       <button class="form-submit" id="arBtn" onclick="analyzeReport()">Analyze Report →</button>
       <div class="error-box" id="arError"></div>
@@ -590,6 +648,7 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="../js/main.js"></script>
 <script>
 /* ── UTILITY: Copy to clipboard ───────────────────────────── */
@@ -829,16 +888,183 @@ function displayLetterResults(data) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   TOOL 3: Credit Report Analyzer
+   TOOL 3: Credit Report Analyzer — File Upload
    ══════════════════════════════════════════════════════════════ */
+
+/* State for uploaded file */
+var uploadedFile = null;       /* { name, size, type, data } */
+var uploadedImages = [];       /* base64 image strings for vision API */
+var extractedText = '';        /* text extracted from PDF/HTML */
+
+/* ── Drag & Drop ──────────────────────────────────────────── */
+(function initDropZone() {
+  var zone = document.getElementById('arDropZone');
+  if (!zone) return;
+
+  ['dragenter','dragover'].forEach(function(ev) {
+    zone.addEventListener(ev, function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(function(ev) {
+    zone.addEventListener(ev, function(e) { e.preventDefault(); zone.classList.remove('dragover'); });
+  });
+  zone.addEventListener('drop', function(e) {
+    var files = e.dataTransfer.files;
+    if (files.length > 0) processFile(files[0]);
+  });
+})();
+
+function handleFileSelect(e) {
+  if (e.target.files.length > 0) processFile(e.target.files[0]);
+}
+
+async function processFile(file) {
+  hideError('arError');
+
+  /* Validate type */
+  var validTypes = ['application/pdf','image/png','image/jpeg','image/jpg','image/gif','image/webp','text/html'];
+  var ext = file.name.split('.').pop().toLowerCase();
+  if (!validTypes.includes(file.type) && !['pdf','png','jpg','jpeg','gif','webp','html','htm'].includes(ext)) {
+    showError('arError', 'Unsupported file type. Please upload a PDF, image (JPG, PNG), or HTML file.');
+    return;
+  }
+
+  /* Validate size (max 20MB) */
+  if (file.size > 20 * 1024 * 1024) {
+    showError('arError', 'File is too large. Maximum size is 20MB.');
+    return;
+  }
+
+  uploadedFile = { name: file.name, size: file.size, type: file.type || ext };
+  uploadedImages = [];
+  extractedText = '';
+
+  /* Show file preview */
+  var sizeStr = file.size < 1024 ? file.size + ' B' : file.size < 1048576 ? (file.size / 1024).toFixed(1) + ' KB' : (file.size / 1048576).toFixed(1) + ' MB';
+  document.getElementById('arFileName').textContent = file.name;
+  document.getElementById('arFileSize').textContent = sizeStr;
+  document.getElementById('arFilePreview').style.display = 'flex';
+  document.getElementById('arDropZone').style.display = 'none';
+
+  /* Process based on file type */
+  var isPDF = file.type === 'application/pdf' || ext === 'pdf';
+  var isImage = file.type.startsWith('image/') || ['png','jpg','jpeg','gif','webp'].includes(ext);
+  var isHTML = file.type === 'text/html' || ['html','htm'].includes(ext);
+
+  if (isPDF) {
+    await processPDF(file);
+  } else if (isImage) {
+    await processImage(file);
+  } else if (isHTML) {
+    await processHTML(file);
+  }
+}
+
+function removeFile() {
+  uploadedFile = null;
+  uploadedImages = [];
+  extractedText = '';
+  document.getElementById('arFilePreview').style.display = 'none';
+  document.getElementById('arDropZone').style.display = '';
+  document.getElementById('arFileInput').value = '';
+  document.getElementById('arUploadIcon').textContent = '📄';
+  document.getElementById('arUploadText').innerHTML = '<strong>Drop your credit report here</strong> or click to browse';
+  document.getElementById('arUploadHint').textContent = 'Supports PDF, images (JPG, PNG), and HTML files';
+}
+
+/* ── PDF processing: extract text + render pages as images ── */
+async function processPDF(file) {
+  try {
+    var arrayBuf = await file.arrayBuffer();
+    if (typeof pdfjsLib !== 'undefined') {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      var pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+      var textParts = [];
+      var maxPages = Math.min(pdf.numPages, 10); /* cap at 10 pages */
+
+      for (var i = 1; i <= maxPages; i++) {
+        var page = await pdf.getPage(i);
+
+        /* Extract text */
+        var content = await page.getTextContent();
+        var pageText = content.items.map(function(item) { return item.str; }).join(' ');
+        if (pageText.trim()) textParts.push(pageText);
+
+        /* Render page to image for vision API */
+        var viewport = page.getViewport({ scale: 1.5 });
+        var canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        var ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        uploadedImages.push(canvas.toDataURL('image/jpeg', 0.8));
+      }
+
+      extractedText = textParts.join('\n\n');
+    }
+  } catch (err) {
+    console.error('PDF processing error:', err);
+    /* Fall back to sending as base64 for server-side processing */
+    var reader = new FileReader();
+    reader.onload = function() { extractedText = ''; };
+    reader.readAsDataURL(file);
+  }
+}
+
+/* ── Image processing: convert to base64 for vision API ──── */
+async function processImage(file) {
+  return new Promise(function(resolve) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      uploadedImages = [e.target.result];
+      resolve();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ── HTML processing: extract text content ──────────────── */
+async function processHTML(file) {
+  return new Promise(function(resolve) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(e.target.result, 'text/html');
+      /* Remove script and style elements */
+      doc.querySelectorAll('script, style, noscript').forEach(function(el) { el.remove(); });
+      extractedText = (doc.body ? doc.body.textContent : '').replace(/\s+/g, ' ').trim();
+      resolve();
+    };
+    reader.readAsText(file);
+  });
+}
+
+/* ── Submit to API ────────────────────────────────────────── */
 async function analyzeReport() {
   var btn = document.getElementById('arBtn');
   hideError('arError');
 
-  var report = document.getElementById('arReport').value.trim();
+  var notes = document.getElementById('arNotes').value.trim();
 
-  if (!report || report.length < 50) {
-    showError('arError', 'Please paste your credit report information (at least 50 characters).');
+  if (!uploadedFile) {
+    showError('arError', 'Please upload your credit report (PDF, image, or HTML file).');
+    return;
+  }
+
+  /* Build request body */
+  var body = {};
+  if (uploadedImages.length > 0) {
+    body.images = uploadedImages;    /* base64 images for vision API */
+  }
+  if (extractedText) {
+    body.reportText = extractedText; /* extracted text from PDF/HTML */
+  }
+  if (notes) {
+    body.notes = notes;
+  }
+  body.fileName = uploadedFile.name;
+
+  if (!body.images && !body.reportText) {
+    showError('arError', 'Could not read the file. Please try a different format (PDF or clear image).');
     return;
   }
 
@@ -848,7 +1074,7 @@ async function analyzeReport() {
     var res = await fetch('/api/ai/report-analyzer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reportText: report })
+      body: JSON.stringify(body)
     });
     var data = await res.json();
 
